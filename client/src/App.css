@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ReactTags__tag {
+    @apply bg-indigo-500 text-white rounded-full px-2;
+}
+
+.ReactTags__remove {
+    @apply text-white hover:shadow-md;
+}
+
+.ReactTags__tagInputField {
+    @apply border-2 border-gray-300 p-1 rounded-md w-full;
+}
