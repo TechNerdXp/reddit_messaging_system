@@ -1,18 +1,20 @@
 from fuzzywuzzy import fuzz
 from project_logger import logger
 
-def filter_posts(posts, keywords, exactMatch, fuzz_ratio=80):
-    logger.info(keywords)
-    keywords = keywords.split()
+def filter_posts(posts, keywords, exactMatch, fuzz_ratio=20):
+    if keywords == '':
+        return posts
+    
+    keywords = keywords.split(',')
     filtered_posts = []
     for post in posts:
         for keyword in keywords:
             if exactMatch:
-                if keyword in post['title'].split() or keyword in post['text'].split():
+                if keyword.lower() in post['title'].lower() or keyword.lower() in post['text'].lower():
                     filtered_posts.append(post)
                     break
             else:
-                if max(fuzz.partial_ratio(keyword, word) for word in post['title'].split() + post['text'].split()) >= fuzz_ratio:
+                if max(fuzz.partial_ratio(keyword.lower(), word.lower()) for word in post['title'].split() + post['text'].split()) >= fuzz_ratio:
                     filtered_posts.append(post)
                     break
     return filtered_posts

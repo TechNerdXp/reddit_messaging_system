@@ -9,7 +9,7 @@ import About from './About';
 function App() {
   return (
     <Router>
-      <div className="bg-gray-100 min-h-[100vh]">
+      <div className="min-h-[100vh] bg-gradient-to-r from-gray-200 to-gray-100">
         <nav className="px-4">
           <ul className="flex space-x-4 p-4">
             <li>
