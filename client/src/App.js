@@ -9,7 +9,7 @@ import About from './About';
 function App() {
   return (
     <Router>
-      <div>
+      <div className="bg-gray-100 min-h-[100vh]">
         <nav className="px-4">
           <ul className="flex space-x-4 p-4">
             <li>
