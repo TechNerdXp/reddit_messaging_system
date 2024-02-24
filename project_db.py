@@ -42,7 +42,7 @@ def insert_post(post):
     c = conn.cursor()
 
     c.execute('''
-        INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url']))
 
     conn.commit()
@@ -64,7 +64,7 @@ def insert_user(username):
     c = conn.cursor()
 
     c.execute('''
-        INSERT INTO users VALUES (?)
+        INSERT OR IGNORE INTO users VALUES (?)
     ''', (username,))
 
     conn.commit()

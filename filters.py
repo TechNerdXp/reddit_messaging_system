@@ -2,8 +2,8 @@ from fuzzywuzzy import fuzz
 from project_logger import logger
 
 def filter_posts(posts, keywords, exactMatch, fuzz_ratio=80):
-    keywords = keywords.split(',')
-    logger.debug(keywords)
+    logger.info(keywords)
+    keywords = keywords.split()
     filtered_posts = []
     for post in posts:
         for keyword in keywords:
