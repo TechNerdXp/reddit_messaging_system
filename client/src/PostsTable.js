@@ -30,7 +30,7 @@ const PostsTable = () => {
 
                             <td className="border px-4 py-2">{index + 1}</td>
                             <td className="border px-4 py-2">{post.title}</td>
-                            <td className="border px-4 py-2">{post.author}</td>
+                            <td className="border px-4 py-2 text-blue-500">@{post.author}</td>
                             <td className="border px-4 py-2">{truncate(post.text, 100)}</td>
                             <td className="border px-4 py-2">{post.id}</td>
                         </tr>

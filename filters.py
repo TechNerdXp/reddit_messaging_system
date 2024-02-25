@@ -1,7 +1,7 @@
 from fuzzywuzzy import fuzz
 from project_logger import logger
 
-def filter_posts(posts, keywords, exactMatch, fuzz_ratio=20):
+def filter_posts(posts, keywords, exactMatch, fuzz_ratio=80):
     if keywords == '':
         return posts
     
