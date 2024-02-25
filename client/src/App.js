@@ -1,11 +1,13 @@
 import React from 'react';
-import { HashRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import './App.css';
 
 // Import your page components
 import Home from './Home';
 import About from './About';
 import PostsTable from './PostsTable';
+import RedditCallback from './RedditCallback';
+import RedditAuth from './RedditAuth';
 
 function App() {
   return (
@@ -22,13 +24,18 @@ function App() {
             <li>
               <Link to="/posts" className="text-blue-600 hover:text-blue-800">Posts</Link>
             </li>
+            <li>
+              <Link to="/reddit_auth" className="text-blue-600 hover:text-blue-800">Reddit Auth</Link>
+            </li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/" exact element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/posts" element={<PostsTable />} />
+          <Route path="/reddit_callback" element={<RedditCallback />} />
+          <Route path="/reddit_auth" element={<RedditAuth />} /> 
         </Routes>
       </div>
     </Router>

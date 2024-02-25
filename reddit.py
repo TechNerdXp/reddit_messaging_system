@@ -3,13 +3,32 @@ import praw
 from dotenv import load_dotenv
 import os
 
+from project_db import insert_reddit_auth, get_reddit_auth
+from project_logger import logger
+
+
 load_dotenv()
 
 reddit = praw.Reddit(
-    client_id=os.getenv('REDDIT_CLIENT_ID'),
-    client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
-    user_agent=os.getenv('REDDIT_USER_AGENT'),
+    client_id = os.getenv('REDDIT_CLIENT_ID'),
+    client_secret = os.getenv('REDDIT_CLIENT_SECRET'),
+    user_agent = os.getenv('REDDIT_USER_AGENT'),
+    redirect_uri = os.getenv('REDDIT_REDIRECT_URI'),
+    refresh_token=get_reddit_auth(os.getenv('REDDIT_USERNAME'))
 )
+
+def auth_url():
+    auth_url = reddit.auth.url(['identity', 'read', 'privatemessages'], 'axbycz', 'permanent')
+    return {'authUrl': auth_url}
+
+def authenticate(code):
+    try:
+        refresh_token = reddit.auth.authorize(code)
+    except Exception as e:
+        logger.error(f'error in getting rfresh token{str(e)}')
+        return {'success': 'false'}
+    insert_reddit_auth(os.getenv('REDDIT_USERNAME'), refresh_token)
+    return {'success': 'true'}
     
 def reddit_posts(subreddit_name, limit=10, postType='top'):
 
