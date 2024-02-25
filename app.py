@@ -2,7 +2,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from reddit import reddit_posts
 from filters import filter_posts
-from project_db import insert_post, insert_user
+from project_db import insert_post, insert_user, get_posts
+from project_logger import logger
+
 
 app = Flask(__name__)
 CORS(app)
@@ -22,6 +24,12 @@ def get_reddit_posts():
         insert_user(post['author'])
 
     return jsonify(filteredData)
+
+@app.route('/posts', methods=['GET'])
+def get_db_posts():
+    posts = get_posts()
+    return jsonify(posts)
+
     
 if __name__ == '__main__':
     app.run(debug=True)

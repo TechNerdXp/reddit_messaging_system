@@ -50,12 +50,16 @@ def insert_post(post):
 
 def get_posts():
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    conn.row_factory = sqlite3.Row
+
     c = conn.cursor()
 
     c.execute('SELECT * FROM posts')
     posts = c.fetchall()
 
     conn.close()
+
+    posts = [dict(row) for row in posts]
 
     return posts
 

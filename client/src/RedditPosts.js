@@ -4,8 +4,6 @@ import { Switch } from '@headlessui/react';
 import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css'
 
-
-
 function RedditPosts({ posts, setPosts }) {
     const [subreddit, setSubreddit] = useState('Python');  // initial value
     const [limit, setLimit] = useState(10);  // initial value
@@ -53,11 +51,6 @@ function RedditPosts({ posts, setPosts }) {
                     />
                 </label>
                 <label className="w-1/3 ml-2">
-                    <span className="label-text">&nbsp;Post Type:&nbsp;</span>
-                    <PostTypes selected={postType} onPostTypeChange={handlePostTypeChange} />
-
-                </label>
-                <label className="w-1/3 ml-2">
                     <span className="label-text">&nbsp;Limit:&nbsp;</span>
                     <input
                         type="number"
@@ -67,6 +60,12 @@ function RedditPosts({ posts, setPosts }) {
                         title="Enter the limit"
                     />
                 </label>
+                <label className="w-1/3 ml-2 z-10">
+                    <span className="label-text">&nbsp;Post Type:&nbsp;</span>
+                    <PostTypes selected={postType} onPostTypeChange={handlePostTypeChange} />
+
+                </label>
+                
             </div>
             <div className="flex justify-between items-end">
                 <div className="pt-6 h-22 w-3/4 mr-2 text-wrap">
