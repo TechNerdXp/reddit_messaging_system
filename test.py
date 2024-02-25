@@ -34,20 +34,39 @@ def reddit_posts(subreddit_name, limit=10, postType='top'):
     return posts_data
 
 
-def get_messages(reddit, username, limit=10):
-    user = reddit.redditor(username)
+def get_messages(reddit):
     messages = []
+    # reddit.inbox.all()
+    # reddit.inbox.unread()
+    # # reddit.inbox.mark_read(items)
+    # # reddit.inbox.mark_unread(items)
+    # reddit.inbox.comment_replies()
+    # reddit.inbox.message()
+    # reddit.inbox.submission_replies()
+    # reddit.inbox.mention()
 
-    for message in user.inbox(limit=limit):
-        messages.append({'id': message.id, 'subject': message.subject, 'body': message.body})
-
+    for message in reddit.inbox.messages():
+        replies = []
+        for reply in message.replies:
+            replies.append({'id': reply.id, 'body': reply.body, 'sender': str(reply.author), 'time': reply.created_utc})
+        messages.append({'id': message.id, 'subject': message.subject, 'body': message.body, 'sender': str(message.author), 'time': message.created_utc, 'replies': replies})
     return messages
+
+
 
 def send_message(reddit, username, subject, body):
     user = reddit.redditor(username)
     user.message(subject=subject, message=body)
+    
+def reply_to_message_by_id(reddit, message_id):
+    message = reddit.inbox.message(message_id)
+    message.reply("This is a reply to your message.")
+
 
 
     
-print(send_message(reddit, 'NadeemGorsi', 'subject', 'test message body2'))
+# print(send_message(reddit, 'NadeemGorsi', 'subject', 'test message body2'))def send_message(reddit, username, subject, body)
+print(get_messages(reddit))
+
+
     

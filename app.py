@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from reddit import reddit_posts, auth_url, authenticate
+from reddit import reddit_posts, auth_url, authenticate, is_authenticated
 from filters import filter_posts
 from project_db import insert_post, insert_user, get_posts
 from project_logger import logger
@@ -18,6 +18,9 @@ def reddit_authenticate():
     code = request.json['code']
     return jsonify(authenticate(code))
 
+@app.route('/api/reddit/is-authenticated', methods=['GET'])
+def reddit_is_authenticated():
+    return jsonify(is_authenticated())
 
 @app.route('/reddit', methods=['GET'])
 def get_reddit_posts():
