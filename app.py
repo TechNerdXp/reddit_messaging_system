@@ -22,14 +22,15 @@ def reddit_authenticate():
 def reddit_is_authenticated():
     return jsonify(is_authenticated())
 
-@app.route('/reddit', methods=['GET'])
+@app.route('/api/reddit/fetch-posts', methods=['POST'])
 def get_reddit_posts():
-    subreddit_name = request.args.get('subreddit', 'Python') 
-    limit = int(request.args.get('limit', 10))
-    postType = request.args.get('postType', 'top')
-    keywords = request.args.get('keywords', '')
-    exactMatch = request.args.get('exactMatch', False)
-    dataFromReddit = reddit_posts(subreddit_name, limit, postType)
+    data = request.get_json()
+    subreddit_name = data.get('subreddit', 'Python') 
+    max_pages = int(data.get('max_pages', 100))
+    postType = data.get('postType', 'top')
+    keywords = data.get('keywords', '')
+    exactMatch = data.get('exactMatch', False)
+    dataFromReddit = reddit_posts(subreddit_name, max_pages, postType)
     filteredData = filter_posts(dataFromReddit, keywords, exactMatch)
     
     for post in filteredData:
@@ -38,7 +39,8 @@ def get_reddit_posts():
 
     return jsonify(filteredData)
 
-@app.route('/posts', methods=['GET'])
+
+@app.route('/api/db/posts', methods=['GET'])
 def get_db_posts():
     posts = get_posts()
     return jsonify(posts)

@@ -4,7 +4,7 @@ const PostsTable = () => {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/posts')
+        fetch('http://localhost:5000/api/db/posts')
             .then(response => response.json())
             .then(data => setPosts(data));
         
@@ -30,7 +30,7 @@ const PostsTable = () => {
 
                             <td className="border px-4 py-2">{index + 1}</td>
                             <td className="border px-4 py-2">{post.title}</td>
-                            <td className="border px-4 py-2 text-blue-500">@{post.author}</td>
+                            <td className="border px-4 py-2 text-blue-500">u/{post.author}</td>
                             <td className="border px-4 py-2">{truncate(post.text, 100)}</td>
                             <td className="border px-4 py-2">{post.id}</td>
                         </tr>

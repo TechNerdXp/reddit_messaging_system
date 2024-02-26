@@ -6,16 +6,28 @@ import 'react-tagsinput/react-tagsinput.css'
 
 function RedditPosts({ posts, setPosts }) {
     const [subreddit, setSubreddit] = useState('Python');  // initial value
-    const [limit, setLimit] = useState(10);  // initial value
+    const [max_pages, setLimit] = useState(10);  // initial value
     const [postType, setPostType] = useState({ id: 1, name: 'Hot', value: 'hot' });  // initial value
     const [keywords, setKeywords] = useState([]);  // initial value
     const [exactMatch, setExactMatch] = useState(false);  // initial value
 
     const handleSubmit = () => {
-        fetch(`http://localhost:5000/reddit?subreddit=${subreddit}&limit=${limit}&postType=${postType.value}&keywords=${keywords.map(keyword => keyword.text).join(',')}&exactMatch=${exactMatch}`)
-            .then(response => response.json())
-            .then(data => setPosts(data));
-    };
+        fetch('http://localhost:5000/api/reddit/fetch-posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subreddit: subreddit,
+                max_pages: max_pages,
+                postType: postType.value,
+                keywords: keywords.map(keyword => keyword.text),
+                exactMatch: exactMatch
+            }),
+        })
+        .then(response => response.json())
+        .then(data => setPosts(data));
+    };    
 
     const handleSubredditChange = (event) => {
         setSubreddit(event.target.value);
@@ -54,10 +66,10 @@ function RedditPosts({ posts, setPosts }) {
                     <span className="label-text">&nbsp;Limit:&nbsp;</span>
                     <input
                         type="number"
-                        value={limit}
+                        value={max_pages}
                         onChange={handleLimitChange}
                         className="w-full field"
-                        title="Enter the limit"
+                        title="Number of pages to fetch or requests"
                     />
                 </label>
                 <label className="w-1/3 ml-2 z-10">

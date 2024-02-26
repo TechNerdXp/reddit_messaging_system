@@ -2,10 +2,12 @@ import praw
 
 from dotenv import load_dotenv
 import os
+import time
 
 from project_db import insert_reddit_auth, get_reddit_auth
 from project_logger import logger
 
+import requests
 
 load_dotenv()
 
@@ -38,24 +40,36 @@ def is_authenticated():
         return {'error': str(e)}
     return {'isAuthenticated': isAuthenticated}
     
-def reddit_posts(subreddit_name, limit=10, postType='top'):
+def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
+    after = None
+    all_posts_data = []
+    for _ in range(max_pages):
+        subreddit = reddit.subreddit(subreddit_name)
+        if postType == 'hot':
+            posts = subreddit.hot(limit=limit, params={'after': after})
+        elif postType == 'new':
+            posts = subreddit.new(limit=limit, params={'after': after})
+        elif postType == 'controversial':
+            posts = subreddit.controversial(limit=limit, params={'after': after})
+        elif postType == 'rising':
+            posts = subreddit.rising(limit=limit, params={'after': after})
+        else:
+            posts = subreddit.top(limit=limit, params={'after': after})
 
-    subreddit = reddit.subreddit(subreddit_name)
-    if postType == 'hot':
-        posts = subreddit.hot(limit=limit)
-    elif postType == 'new':
-        posts = subreddit.new(limit=limit)
-    elif postType == 'controversial':
-        posts = subreddit.controversial(limit=limit)
-    elif postType == 'rising':
-        posts = subreddit.rising(limit=limit)
-    else:
-        posts = subreddit.top(limit=limit)
+        posts_data = []
+        logger.debug(vars(posts))
+        for post in posts:
+            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url})
         
-    posts_data = []
-    for post in posts:
-        posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url})
-    return posts_data
+        if not posts_data:
+            break
+
+        after = posts_data[-1]['id']
+        all_posts_data.extend(posts_data)
+        time.sleep(2)
+
+    return all_posts_data
+
 
 
 def get_messages(reddit):
