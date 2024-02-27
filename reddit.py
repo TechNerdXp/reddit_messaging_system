@@ -31,24 +31,28 @@ def authenticate(code):
         reddit = create_reddit_instance()
         refresh_token = reddit.auth.authorize(code)
         user = reddit.user.me()
-        admins = os.getenv('ADMINS').split(',')
+        admins = os.getenv('REDDIT_ADMINS').split(',')
+        # logger.debug(admins)
         if user.name not in admins:
+            logger.info(f'{user.name} is not an admin')
             return {'success': 'false', 'message': 'User is not an admin'}
         session['REDDIT_REFRESH_TOKEN'] = refresh_token
         session['username'] = user.name
         return {'success': 'true', 'username': user.name}
     except Exception as e:
-        logger.error(f'Error in getting refresh token: {str(e)}')
+        logger.error(f'Error in authenticating: {str(e)}')
         return {'success': 'false'}
 
 def is_authenticated():
     try:
         reddit = create_reddit_instance()
+        logger.debug(f'session: {session.get('username')}')
+        logger.debug(f'username: {reddit.user.me()}')
         isAuthenticated = reddit.user.me() is not None and session.get('username') is not None
     except Exception as e:
         logger.error(str(e))
         return {'error': str(e)}
-    return {'isAuthenticated': isAuthenticated}
+    return {'isAuthenticated': isAuthenticated, 'username': session.get('username')}
 
 def revoke_token():
     try:

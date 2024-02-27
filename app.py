@@ -1,13 +1,19 @@
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated
 from filters import filter_posts
 from project_db import insert_post, insert_user, get_posts
 from project_logger import logger
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+app.secret_key = os.getenv('SECRET_KEY')
+app.config['SESSION_TYPE'] = 'filesystem'
+CORS(app, supports_credentials=True)
+
 
 @app.route('/api/reddit/auth-url')
 def reddit_auth_url():
@@ -16,10 +22,13 @@ def reddit_auth_url():
 @app.route('/api/reddit/authenticate', methods=['POST'])
 def reddit_authenticate():
     code = request.json['code']
+    session['test'] = 'testmest'
+    
     return jsonify(authenticate(code))
 
 @app.route('/api/reddit/is-authenticated', methods=['GET'])
 def reddit_is_authenticated():
+    logger.debug(session.get('test'))
     return jsonify(is_authenticated())
 
 @app.route('/api/reddit/fetch-posts', methods=['POST'])

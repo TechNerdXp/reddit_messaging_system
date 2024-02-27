@@ -4,7 +4,7 @@ const PostsTable = () => {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/db/posts')
+        fetch('/api/db/posts', {credentials: 'include'})
             .then(response => response.json())
             .then(data => setPosts(data));
         

@@ -12,7 +12,8 @@ function RedditPosts({ posts, setPosts }) {
     const [exactMatch, setExactMatch] = useState(false);  // initial value
 
     const handleSubmit = () => {
-        fetch('http://localhost:5000/api/reddit/fetch-posts', {
+        fetch('/api/reddit/fetch-posts', {
+            credentials: 'include',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
