@@ -52,8 +52,6 @@ def get_messages(reddit):
         messages.append({'id': message.id, 'subject': message.subject, 'body': message.body, 'sender': str(message.author), 'time': message.created_utc, 'replies': replies})
     return messages
 
-
-
 def send_message(reddit, username, subject, body):
     user = reddit.redditor(username)
     user.message(subject=subject, message=body)
