@@ -22,9 +22,13 @@ def create_reddit_instance():
     return reddit
 
 def auth_url():
-    reddit = create_reddit_instance()
-    auth_url = reddit.auth.url(['identity', 'read', 'privatemessages'], 'axbycz', 'permanent')
-    return {'authUrl': auth_url}
+    try:
+        reddit = create_reddit_instance()
+        auth_url = reddit.auth.url(['identity', 'read', 'privatemessages'], 'axbycz', 'permanent')
+        return {'authUrl': auth_url}
+    except Exception as e:
+        logger.error(f'Error in creating auth URL: {str(e)}')
+        return {'success': 'false', 'authUrl': '#'}
 
 def authenticate(code):
     try:
@@ -41,18 +45,16 @@ def authenticate(code):
         return {'success': 'true', 'username': user.name}
     except Exception as e:
         logger.error(f'Error in authenticating: {str(e)}')
-        return {'success': 'false'}
+        return {'success': 'false', 'error': str(e)}
 
 def is_authenticated():
     try:
         reddit = create_reddit_instance()
-        logger.debug(f'session: {session.get('username')}')
-        logger.debug(f'username: {reddit.user.me()}')
         isAuthenticated = reddit.user.me() is not None and session.get('username') is not None
     except Exception as e:
-        logger.error(str(e))
-        return {'error': str(e)}
-    return {'isAuthenticated': isAuthenticated, 'username': session.get('username')}
+        logger.error(f'Error in checking auth status: {str(e)}')
+        return {'success': 'false', 'error': str(e)}
+    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'username': session.get('username')}
 
 def revoke_token():
     try:
@@ -62,10 +64,10 @@ def revoke_token():
         data = {"token": token, "token_type_hint": "access_token"}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
         session.clear()
-        return response.status_code
+        return {'success': 'true', 'response': vars(response)}
     except Exception as e:
         logger.error(f'Error in revoking token: {str(e)}')
-        return {'error': str(e)}
+        return {'success': 'false', 'error': str(e)}
 
 
     
