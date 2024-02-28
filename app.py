@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth
+from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, reply_to_message_by_id
 from filters import filter_posts
 from project_db import insert_post, insert_user, get_posts
 from project_logger import logger
@@ -56,6 +56,10 @@ def get_reddit_posts():
 def get_db_posts():
     posts = get_posts()
     return jsonify(posts)
+
+@app.route('/api/test', methods=['GET'])
+def test():
+    return jsonify(get_messages())
 
     
 if __name__ == '__main__':
