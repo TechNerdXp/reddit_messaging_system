@@ -60,7 +60,8 @@ def get_db_posts():
 @app.route('/api/test', methods=['GET'])
 def test():
     return jsonify([get_messages()])
-
+    # return send_message('NadeemGorsi', 'Just a test message', 'test message 4')
+    # return reply_to_message_by_id('26rcx6t', 'body body2 body2...')
     
 if __name__ == '__main__':
     app.run(debug=True)

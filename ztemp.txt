@@ -1,0 +1,38 @@
+# reddit messages aray
+[
+    {
+      "body": "test message body",
+      "id": "26mnlhl",
+      "replies": [
+        {
+          "body": "Hello nice test message. pls keep it up lets collect some messages in the chat lone developer. Thanks!",
+          "id": "26mq3m4",
+          "sender": "NadeemGorsi",
+          "time": 1708884871.0
+        },
+        {
+          "body": "Yeah it's really nice to message yourself on two reddit accounts for development purpose. lorem ipsum text can never make this cool sense. can it?",
+          "id": "26mq7pm",
+          "sender": "TechNerdXp",
+          "time": 1708885020.0
+        },
+        {
+          "body": "is this a nested reply",
+          "id": "26rbgdw",
+          "sender": "NadeemGorsi",
+          "time": 1709144085.0
+        }
+      ],
+      "sender": "TechNerdXp",
+      "subject": "subject",
+      "time": 1708881347.0
+    },
+    {
+      "body": "test message body2",
+      "id": "26mnnqk",
+      "replies": [],
+      "sender": "TechNerdXp",
+      "subject": "subject",
+      "time": 1708881398.0
+    }
+  ]

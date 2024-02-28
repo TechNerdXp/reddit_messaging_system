@@ -108,7 +108,7 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
 
         after = posts_data[-1]['id']
         all_posts_data.extend(posts_data)
-        time.sleep(os.getenv('REDDIT_RATE_LIMIT'))
+        time.sleep(int(os.getenv('REDDIT_RATE_LIMIT')))
 
     return all_posts_data
 
@@ -139,8 +139,9 @@ def send_message(username, subject, body):
     user = reddit.redditor(username)
     user.message(subject=subject, message=body)
     
-def reply_to_message_by_id(message_id):
+def reply_to_message_by_id(message_id, body):
     reddit = create_reddit_instance()
     message = reddit.inbox.message(message_id)
-    message.reply("This is a reply to your message.")
+    message.reply(body)
+    
 
