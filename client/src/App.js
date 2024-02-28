@@ -8,6 +8,7 @@ import About from './About';
 import PostsTable from './PostsTable';
 import RedditCallback from './RedditCallback';
 import RedditAuth from './RedditAuth';
+import TestComponent from './TestComponent';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/posts" element={<PostsTable />} />
           <Route path="/reddit_callback" element={<RedditCallback />} />
           <Route path="/reddit_auth" element={<RedditAuth />} /> 
+          <Route path="/test" element={<TestComponent />} /> 
         </Routes>
       </div>
     </Router>

@@ -59,7 +59,7 @@ def get_db_posts():
 
 @app.route('/api/test', methods=['GET'])
 def test():
-    return jsonify(get_messages())
+    return jsonify([get_messages()])
 
     
 if __name__ == '__main__':
