@@ -19,10 +19,10 @@ function RedditAuth() {
                 }
             });
     }, [isAuthenticated]);
-    
+
     const revokeAuth = () => {
         if (window.confirm("Are you sure you want to revoke reddit authentication?")) {
-            fetch('/api/reddit/revoke-auth', {credentials: 'include'})
+            fetch('/api/reddit/revoke-auth', { credentials: 'include' })
                 .then(response => response.json())
                 .then(data => setIsAuthenticated(false));
         }
@@ -31,7 +31,11 @@ function RedditAuth() {
     return (
         <div className="flex w-[100vw] h-[100vh]">
             {isAuthenticated ? (
-                <p className="m-auto font-bold text-cyan cursor-default">Authenticated as {username}<span className="text-gray-500"> | </span><span className="text-blue-900 hover:text-blue-800 cursor-pointer" onClick={revokeAuth}>Revoke Auth</span></p>
+                <p className="m-auto font-bold text-gray-800 cursor-default shadow-sm">
+                    Authenticated as <span className="text-gray-900">r/{username}</span>
+                    <span className="text-gray-600"> | </span>
+                    <span className="text-blue-900 hover:text-blue-800 cursor-pointer" onClick={revokeAuth}>Revoke Auth</span>
+                </p>
             ) : authUrl ? (
                 <a className="p-6 button m-auto" href={authUrl}>Authorize with Reddit</a>
             ) : (
