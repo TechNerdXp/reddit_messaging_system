@@ -3,12 +3,10 @@ from dotenv import load_dotenv
 from openai import OpenAI
 load_dotenv()
 
-
 assistant_id = os.getenv("OPENAI_ASSISTENT_ID")
 client = OpenAI(
   api_key=os.getenv("OPENAI_API_KEY"),
 )
-
 
 def create_thread():
     thread = client.beta.threads.create()
@@ -37,11 +35,15 @@ def check_run_status(threadId, runId):
     return run.status
     
 def get_thread_messages(threadId):
-
     messages = client.beta.threads.messages.list(
         thread_id=threadId
     )
-    print(vars(messages))
+    for message in messages.data:
+        print("Message ID:", message.id)
+        print("Thread ID:", message.thread_id)
+        print("Message Content:", message.content[0].text.value)
+        print('.................................................')
+        # print(messages)
 
 
 # print(create_thread())
