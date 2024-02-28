@@ -40,6 +40,8 @@ def get_reddit_posts():
     postType = data.get('postType', 'top')
     keywords = data.get('keywords', '')
     exactMatch = data.get('exactMatch', False)
+    logger.debug(type(keywords))
+    logger.debug(keywords)
     dataFromReddit = reddit_posts(subreddit_name, max_pages, postType)
     filteredData = filter_posts(dataFromReddit, keywords, exactMatch)
     

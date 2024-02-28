@@ -22,7 +22,7 @@ function RedditPosts({ posts, setPosts }) {
                 subreddit: subreddit,
                 max_pages: max_pages,
                 postType: postType.value,
-                keywords: keywords.map(keyword => keyword.text),
+                keywords: keywords,
                 exactMatch: exactMatch
             }),
         })

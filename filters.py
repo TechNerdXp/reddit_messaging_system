@@ -2,10 +2,9 @@ from fuzzywuzzy import fuzz
 from project_logger import logger
 
 def filter_posts(posts, keywords, exactMatch, fuzz_ratio=80):
-    if keywords == '':
+    if keywords == []:
         return posts
     
-    keywords = keywords.split(',')
     filtered_posts = []
     for post in posts:
         for keyword in keywords:
