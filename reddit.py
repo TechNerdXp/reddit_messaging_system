@@ -92,7 +92,7 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
         posts_data = []
         logger.debug(vars(posts))
         for post in posts:
-            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url})
+            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('username')})
         
         if not posts_data:
             break

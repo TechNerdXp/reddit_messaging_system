@@ -16,7 +16,8 @@ def create_tables():
         html TEXT,
         author TEXT,
         subreddit TEXT,
-        post_url TEXT)
+        post_url TEXT),
+        admin TEXT)
     ''')
 
     c.execute('''
@@ -48,8 +49,8 @@ def insert_post(post):
     c = conn.cursor()
 
     c.execute('''
-        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url']))
+        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url'], post['admin']))
 
     conn.commit()
     conn.close()

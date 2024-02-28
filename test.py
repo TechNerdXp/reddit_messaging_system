@@ -74,4 +74,3 @@ def dump_to_csv(data, filename='temp.csv'):
         dict_writer.writeheader()
         dict_writer.writerows(data)
 
-    
