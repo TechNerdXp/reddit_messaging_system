@@ -56,7 +56,7 @@ def is_authenticated():
         return {'success': 'false', 'error': str(e)}
     return {'success': 'true', 'isAuthenticated': isAuthenticated, 'username': session.get('username')}
 
-def revoke_token():
+def revoke_auth():
     try:
         token = session.get('REDDIT_REFRESH_TOKEN')
         url = "https://www.reddit.com/api/v1/revoke_token"
@@ -64,7 +64,8 @@ def revoke_token():
         data = {"token": token, "token_type_hint": "access_token"}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
         session.clear()
-        return {'success': 'true', 'response': vars(response)}
+        logger.debug(vars(response))
+        return {'success': 'true'}
     except Exception as e:
         logger.error(f'Error in revoking token: {str(e)}')
         return {'success': 'false', 'error': str(e)}
