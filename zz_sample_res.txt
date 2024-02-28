@@ -191,3 +191,17 @@
  'visited': False,
  'whitelist_status': 'all_ads',
  'wls': 6}
+
+
+OpenAI sample response for assistant setup.
+
+# add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
+:: {'id': 'msg_j3I7fy9u95IP9ED8qUVIOSOn', 'assistant_id': None, 'content': [MessageContentText(text=Text(annotations=[], value='test message'), type='text')], 'created_at': 1709138433, 'file_ids': [], 'metadata': {}, 'object': 'thread.message', 'role': 'user', 'run_id': None, 'thread_id': 'thread_j4b3JCffZYbuFt3vb1Zj0RAT'}
+
+# print(run_assistant('thread_j4b3JCffZYbuFt3vb1Zj0RAT'))
+::
+# check_run_status('thread_j4b3JCffZYbuFt3vb1Zj0RAT', 'run_pA03itrIt6aIo9gQCkTlpkJK')
+::
+# get_thread_messages('thread_j4b3JCffZYbuFt3vb1Zj0RAT')
+:: {'data': [ThreadMessage(id='msg_YMLG29rhWpol2gjKZqEi1y88', assistant_id='asst_JvcS0y1KojqOFYaPAA1EvLu6', content=[MessageContentText(text=Text(annotations=[], value='Dear Jane Doe,\n\nThis is a test message for your premium account. As a valued premium member, we assure you the best of our services. \n\nKind Regards.'), type='text')], created_at=1709138598, file_ids=[], metadata={}, object='thread.message', role='assistant', run_id='run_pA03itrIt6aIo9gQCkTlpkJK', thread_id='thread_j4b3JCffZYbuFt3vb1Zj0RAT'), ThreadMessage(id='msg_j3I7fy9u95IP9ED8qUVIOSOn', assistant_id=None, content=[MessageContentText(text=Text(annotations=[], value='test message'), type='text')], created_at=1709138433, file_ids=[], metadata={}, object='thread.message', role='user', run_id=None, thread_id='thread_j4b3JCffZYbuFt3vb1Zj0RAT')], '_model': <class 'openai.types.beta.threads.thread_message.ThreadMessage'>, '_client': <openai.OpenAI object at 0x000002305E4627E0>, '_options': FinalRequestOptions(method='get', url='/threads/thread_j4b3JCffZYbuFt3vb1Zj0RAT/messages', params={}, headers={'OpenAI-Beta': 'assistants=v1'}, max_retries=NOT_GIVEN, timeout=NOT_GIVEN, files=None, idempotency_key=None, post_parser=<function SyncAPIClient._request_api_list.<locals>._parser at 0x000002305E601940>, json_data=None, extra_json=None)}
+ 

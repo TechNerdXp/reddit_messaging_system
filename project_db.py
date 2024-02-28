@@ -16,7 +16,7 @@ def create_tables():
         html TEXT,
         author TEXT,
         subreddit TEXT,
-        post_url TEXT),
+        post_url TEXT,
         admin TEXT)
     ''')
 

@@ -1,23 +1,51 @@
 import os
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 load_dotenv()
 
-def call_assistant(message):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    assistant_id = os.getenv("OPENAI_ASSISTENT_ID")
 
-    response = openai.Assistant.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": message},
-        ],
-        assistant_id=assistant_id,
+assistant_id = os.getenv("OPENAI_ASSISTENT_ID")
+client = OpenAI(
+  api_key=os.getenv("OPENAI_API_KEY"),
+)
+
+
+def create_thread():
+    thread = client.beta.threads.create()
+    return thread.id
+
+def add_message(message, threadId):
+    message = client.beta.threads.messages.create(
+        thread_id=threadId,
+        role="user",
+        content= message
     )
+    
+def run_assistant(threadId):
+    run = client.beta.threads.runs.create(
+        thread_id=threadId,
+        assistant_id=assistant_id,
+        instructions=""
+    )
+    return run.id
 
-    return response['choices'][0]['message']['content']
+def check_run_status(threadId, runId):
+    run = client.beta.threads.runs.retrieve(
+        thread_id=threadId,
+        run_id=runId
+    )
+    return run.status
+    
+def get_thread_messages(threadId):
 
-# Example usage:
-response = call_assistant("Hello, assistant!")
-print(response)
+    messages = client.beta.threads.messages.list(
+        thread_id=threadId
+    )
+    print(vars(messages))
+
+
+# print(create_thread())
+# add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
+# print(run_assistant('thread_j4b3JCffZYbuFt3vb1Zj0RAT'))
+# check_run_status('thread_j4b3JCffZYbuFt3vb1Zj0RAT', 'run_pA03itrIt6aIo9gQCkTlpkJK')
+# get_thread_messages('thread_j4b3JCffZYbuFt3vb1Zj0RAT')

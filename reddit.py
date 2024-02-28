@@ -8,6 +8,11 @@ from project_logger import logger
 
 load_dotenv()
 
+user_subreddits = {
+    'TechNerdXp': ['Python', 'Java', 'Test']
+}
+
+
 def create_reddit_instance():
     """
     Create and return a Reddit instance with the refresh token from the session.
@@ -73,6 +78,10 @@ def revoke_auth():
 
     
 def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
+    if subreddit_name not in user_subreddits[session.get('username')]:
+        logger.error(f'The subreddit {subreddit_name} is not assigned to the current user.')
+        return {'error': f'The subreddit {subreddit_name} is not assigned to the current user.'}
+
     reddit = create_reddit_instance()
     after = None
     all_posts_data = []
@@ -99,7 +108,7 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
 
         after = posts_data[-1]['id']
         all_posts_data.extend(posts_data)
-        time.sleep(2)
+        time.sleep(os.getenv('REDDIT_RATE_LIMIT'))
 
     return all_posts_data
 
@@ -125,6 +134,7 @@ def get_messages():
     return messages
 
 def send_message(username, subject, body):
+    username = 'NadeemGorsi' # temporary override to avoid swarming users with test messages.
     reddit = create_reddit_instance()
     user = reddit.redditor(username)
     user.message(subject=subject, message=body)
