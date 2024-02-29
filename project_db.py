@@ -17,7 +17,9 @@ def create_tables():
         author TEXT,
         subreddit TEXT,
         post_url TEXT,
-        admin TEXT)
+        admin TEXT,
+        openai_thread_id TEXT,
+        reddit_message_id TEXT)
     ''')
 
     c.execute('''
@@ -49,8 +51,8 @@ def insert_post(post):
     c = conn.cursor()
 
     c.execute('''
-        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url'], post['admin']))
+        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url'], post['admin'], post['openai_thread_id'], post['reddit_message_id']))
 
     conn.commit()
     conn.close()
