@@ -38,7 +38,7 @@ def create_tables():
     
     c.execute('''
         CREATE TABLE IF NOT EXISTS reddit_auth
-        (username TEXT PRIMARY KEY,
+        (admin_username TEXT PRIMARY KEY,
         refresh_token TEXT)
     ''')
 
@@ -127,22 +127,22 @@ def get_messages_for_user(username):
 
     return messages
 
-def insert_reddit_auth(username, refresh_token):
+def insert_reddit_auth(admin_username, refresh_token):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
     c.execute('''
         INSERT OR REPLACE INTO reddit_auth VALUES (?, ?)
-    ''', (username, refresh_token))
+    ''', (admin_username, refresh_token))
 
     conn.commit()
     conn.close()
 
-def get_reddit_auth(username):
+def get_reddit_auth(admin_username):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
-    c.execute('SELECT refresh_token FROM reddit_auth WHERE username = ?', (username,))
+    c.execute('SELECT refresh_token FROM reddit_auth WHERE username = ?', (admin_username,))
     result = c.fetchone()
 
     conn.close()
