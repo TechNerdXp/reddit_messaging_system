@@ -83,6 +83,33 @@ def insert_user(username):
     conn.commit()
     conn.close()
 
+def insert_reddit_auth(admin_username, refresh_token):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        INSERT OR REPLACE INTO reddit_auth VALUES (?, ?)
+    ''', (admin_username, refresh_token))
+
+    conn.commit()
+    conn.close()
+
+def get_reddit_auth(admin_username):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('SELECT refresh_token FROM reddit_auth WHERE username = ?', (admin_username,))
+    result = c.fetchone()
+
+    conn.close()
+
+    return result[0] if result else None
+
+
+
+
+
+
 def get_users():
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
@@ -126,28 +153,5 @@ def get_messages_for_user(username):
     conn.close()
 
     return messages
-
-def insert_reddit_auth(admin_username, refresh_token):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('''
-        INSERT OR REPLACE INTO reddit_auth VALUES (?, ?)
-    ''', (admin_username, refresh_token))
-
-    conn.commit()
-    conn.close()
-
-def get_reddit_auth(admin_username):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('SELECT refresh_token FROM reddit_auth WHERE username = ?', (admin_username,))
-    result = c.fetchone()
-
-    conn.close()
-
-    return result[0] if result else None
-
 
 create_tables()
