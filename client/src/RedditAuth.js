@@ -10,7 +10,7 @@ function RedditAuth() {
             .then(response => response.json())
             .then(data => {
                 setIsAuthenticated(data.isAuthenticated);
-                setUsername(data.username);
+                setUsername(data.admin_username);
 
                 if (!data.isAuthenticated) {
                     fetch('/api/reddit/auth-url', { credentials: 'include' })

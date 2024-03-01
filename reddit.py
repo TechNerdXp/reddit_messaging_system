@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import session
 import requests
 from project_logger import logger
+from project_db import insert_reddit_auth
 
 load_dotenv()
 
@@ -41,13 +42,16 @@ def authenticate(code):
         refresh_token = reddit.auth.authorize(code)
         user = reddit.user.me()
         admins = os.getenv('REDDIT_ADMINS').split(',')
+        admin_username = user.name
         # logger.debug(admins)
-        if user.name not in admins:
-            logger.info(f'{user.name} is not an admin')
+        if admin_username not in admins:
+            logger.info(f'{admin_username} is not an admin')
             return {'success': 'false', 'message': 'User is not an admin'}
         session['REDDIT_REFRESH_TOKEN'] = refresh_token
-        session['username'] = user.name
-        return {'success': 'true', 'username': user.name}
+        session['admin_username'] = admin_username
+        # for using authentication out side session saving token to DB
+        insert_reddit_auth(admin_username, refresh_token)
+        return {'success': 'true', 'admin_username': admin_username}
     except Exception as e:
         logger.error(f'Error in authenticating: {str(e)}')
         return {'success': 'false', 'error': str(e)}
@@ -55,11 +59,11 @@ def authenticate(code):
 def is_authenticated():
     try:
         reddit = create_reddit_instance()
-        isAuthenticated = reddit.user.me() is not None and session.get('username') is not None
+        isAuthenticated = reddit.user.me() is not None and session.get('admin_username') is not None
     except Exception as e:
         logger.error(f'Error in checking auth status: {str(e)}')
         return {'success': 'false', 'error': str(e)}
-    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'username': session.get('username')}
+    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'admin_username': session.get('admin_username')}
 
 def revoke_auth():
     try:
@@ -78,7 +82,7 @@ def revoke_auth():
 
     
 def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
-    if subreddit_name not in user_subreddits[session.get('username')]:
+    if subreddit_name not in user_subreddits[session.get('admin_username')]:
         logger.error(f'The subreddit {subreddit_name} is not assigned to the current user.')
         return {'error': f'The subreddit {subreddit_name} is not assigned to the current user.'}
 
@@ -101,7 +105,7 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
         posts_data = []
         logger.debug(vars(posts))
         for post in posts:
-            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('username')})
+            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
         
         if not posts_data:
             break
@@ -143,5 +147,3 @@ def reply_to_message_by_id(message_id, body):
     reddit = create_reddit_instance()
     message = reddit.inbox.message(message_id)
     message.reply(body)
-    
-

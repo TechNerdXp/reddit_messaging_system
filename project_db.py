@@ -98,7 +98,7 @@ def get_reddit_auth(admin_username):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
-    c.execute('SELECT refresh_token FROM reddit_auth WHERE username = ?', (admin_username,))
+    c.execute('SELECT refresh_token FROM reddit_auth WHERE admin_username = ?', (admin_username,))
     result = c.fetchone()
 
     conn.close()
