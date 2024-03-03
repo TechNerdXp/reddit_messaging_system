@@ -44,6 +44,7 @@ def get_thread_messages(threadId):
         print("Message Content:", message.content[0].text.value)
         print('.................................................')
         # print(messages)
+    return messages
 
 
 # print(create_thread())
