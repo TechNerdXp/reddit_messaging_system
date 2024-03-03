@@ -6,6 +6,8 @@ from flask import session
 import requests
 from project_logger import logger
 from project_db import insert_reddit_auth
+from more_itertools  import peekable
+
 
 load_dotenv()
 
@@ -79,8 +81,6 @@ def revoke_auth():
         logger.error(f'Error in revoking token: {str(e)}')
         return {'success': 'false', 'error': str(e)}
 
-
-    
 def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
     if subreddit_name not in user_subreddits[session.get('admin_username')]:
         logger.error(f'The subreddit {subreddit_name} is not assigned to the current user.')
@@ -102,21 +102,21 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
         else:
             posts = subreddit.top(limit=limit, params={'after': after})
 
-        posts_data = []
-        logger.debug(vars(posts))
-        if posts:    
-            for post in posts:
-                posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
-            after = posts_data[-1]['id']
-            all_posts_data.extend(posts_data)
-        else: 
+        posts = peekable(posts)
+        if not posts:
+            logger.info('no more posts')
             break
+
+        posts_data = []
+        for post in posts:
+            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name if post.author else None, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
+        
+        after = posts_data[-1]['id']
+        all_posts_data.extend(posts_data)
 
         time.sleep(int(os.getenv('REDDIT_RATE_LIMIT')))
 
     return all_posts_data
-
-
 
 def get_messages():
     reddit = create_reddit_instance()
