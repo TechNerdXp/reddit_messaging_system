@@ -20,7 +20,7 @@ def create_tables():
         admin TEXT,
         openai_thread_id TEXT,
         reddit_message_id TEXT,
-        message_status TEXT)
+        message_status TEXT DEFAULT 'thread_not_started')
     ''')
 
     c.execute('''
