@@ -57,7 +57,7 @@ def insert_post(post):
     c = conn.cursor()
 
     c.execute('''
-        INSERT OR IGNORE INTO posts VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO posts (id, title, text, html, author, subreddit, post_url, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url'], post['admin']))
 
     conn.commit()
