@@ -28,13 +28,6 @@ def create_tables():
     #     (username TEXT PRIMARY KEY)
     # ''')
 
-    
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS reddit_auth
-        (admin_username TEXT PRIMARY KEY,
-        refresh_token TEXT)
-    ''')
-    
     # Create table for messages
     c.execute('''
         CREATE TABLE IF NOT EXISTS messages
@@ -46,6 +39,12 @@ def create_tables():
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
         replied INTEGER DEFAULT 0,
         FOREIGN KEY(post_id) REFERENCES posts(id))
+    ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS reddit_auth
+        (admin_username TEXT PRIMARY KEY,
+        refresh_token TEXT)
     ''')
 
 
@@ -85,7 +84,20 @@ def get_posts(admin=None):
 
     return posts
 
+def insert_message(post_id, message, message_id, source):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
 
+    # Insert a message and ignore if the message_id already exists
+    c.execute('''
+        INSERT OR IGNORE INTO messages
+        (post_id, message, message_id, source)
+        VALUES (?, ?, ?, ?)
+    ''', (post_id, message, message_id, source))
+
+    conn.commit()
+    conn.close()
+    
 def update_openai_thread_id(post_id, openai_thread_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
@@ -139,6 +151,20 @@ def update_message_status(post_id, status):
     conn.commit()
     conn.close()
     
+def mark_message_replied(message_id):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    # Mark a message as replied
+    c.execute('''
+        UPDATE messages
+        SET replied = 1
+        WHERE message_id = ?
+    ''', (message_id,))
+
+    conn.commit()
+    conn.close()
+
 def insert_reddit_auth(admin_username, refresh_token):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
@@ -160,39 +186,6 @@ def get_reddit_auth(admin_username):
     conn.close()
 
     return result[0] if result else None
-
-def insert_message(post_id, message, message_id, source):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Insert a message and ignore if the message_id already exists
-    c.execute('''
-        INSERT OR IGNORE INTO messages
-        (post_id, message, message_id, source)
-        VALUES (?, ?, ?, ?)
-    ''', (post_id, message, message_id, source))
-
-    conn.commit()
-    conn.close()
-
-def mark_message_replied(message_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Mark a message as replied
-    c.execute('''
-        UPDATE messages
-        SET replied = 1
-        WHERE message_id = ?
-    ''', (message_id,))
-
-    conn.commit()
-    conn.close()
-
-
-
-
-
 
 
 
