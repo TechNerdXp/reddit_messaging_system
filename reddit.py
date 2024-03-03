@@ -104,14 +104,14 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
 
         posts_data = []
         logger.debug(vars(posts))
-        for post in posts:
-            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
-        
-        if not posts_data:
+        if posts:    
+            for post in posts:
+                posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
+            after = posts_data[-1]['id']
+            all_posts_data.extend(posts_data)
+        else: 
             break
 
-        after = posts_data[-1]['id']
-        all_posts_data.extend(posts_data)
         time.sleep(int(os.getenv('REDDIT_RATE_LIMIT')))
 
     return all_posts_data
