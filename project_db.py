@@ -64,13 +64,19 @@ def insert_post(post):
     conn.commit()
     conn.close()
 
-def get_posts():
+def get_posts(admin=None):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     conn.row_factory = sqlite3.Row
 
     c = conn.cursor()
 
-    c.execute('SELECT * FROM posts')
+    if admin is None:
+        # Select all posts if no admin is specified
+        c.execute('SELECT * FROM posts')
+    else:
+        # Select posts for a specific admin
+        c.execute('SELECT * FROM posts WHERE admin = ?', (admin,))
+
     posts = c.fetchall()
 
     conn.close()
@@ -78,6 +84,7 @@ def get_posts():
     posts = [dict(row) for row in posts]
 
     return posts
+
 
 def update_openai_thread_id(post_id, openai_thread_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
