@@ -23,10 +23,10 @@ def create_tables():
         message_status TEXT)
     ''')
 
-    # c.execute('''
-    #     CREATE TABLE IF NOT EXISTS users
-    #     (username TEXT PRIMARY KEY)
-    # ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS users
+        (username TEXT PRIMARY KEY)
+    ''')
 
     # Create table for messages
     c.execute('''
@@ -83,20 +83,6 @@ def get_posts(admin=None):
     posts = [dict(row) for row in posts]
 
     return posts
-
-def insert_message(post_id, message, message_id, source):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Insert a message and ignore if the message_id already exists
-    c.execute('''
-        INSERT OR IGNORE INTO messages
-        (post_id, message, message_id, source)
-        VALUES (?, ?, ?, ?)
-    ''', (post_id, message, message_id, source))
-
-    conn.commit()
-    conn.close()
     
 def update_openai_thread_id(post_id, openai_thread_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
@@ -151,6 +137,20 @@ def update_message_status(post_id, status):
     conn.commit()
     conn.close()
     
+def insert_message(post_id, message, message_id, source):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    # Insert a message and ignore if the message_id already exists
+    c.execute('''
+        INSERT OR IGNORE INTO messages
+        (post_id, message, message_id, source)
+        VALUES (?, ?, ?, ?)
+    ''', (post_id, message, message_id, source))
+
+    conn.commit()
+    conn.close()
+    
 def mark_message_replied(message_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
@@ -161,6 +161,17 @@ def mark_message_replied(message_id):
         SET replied = 1
         WHERE message_id = ?
     ''', (message_id,))
+
+    conn.commit()
+    conn.close()
+    
+def insert_user(username):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        INSERT OR IGNORE INTO users VALUES (?)
+    ''', (username,))
 
     conn.commit()
     conn.close()
@@ -192,17 +203,6 @@ def get_reddit_auth(admin_username):
 
 
 
-
-# def insert_user(username):
-#     conn = sqlite3.connect('db/reddit_messaging_sys.db')
-#     c = conn.cursor()
-
-#     c.execute('''
-#         INSERT OR IGNORE INTO users VALUES (?)
-#     ''', (username,))
-
-#     conn.commit()
-#     conn.close()
 
 # def get_users():
 #     conn = sqlite3.connect('db/reddit_messaging_sys.db')
