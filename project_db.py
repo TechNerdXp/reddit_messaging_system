@@ -198,7 +198,7 @@ def get_reddit_auth(admin_username):
 
     return result[0] if result else None
 
-
+create_tables()
 
 
 
@@ -247,5 +247,3 @@ def get_reddit_auth(admin_username):
 #     conn.close()
 
 #     return messages
-
-# create_tables()
