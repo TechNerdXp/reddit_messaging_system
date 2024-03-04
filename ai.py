@@ -18,6 +18,7 @@ def add_message(message, threadId):
         role="user",
         content= message
     )
+    return message.id
     
 def run_assistant(threadId):
     run = client.beta.threads.runs.create(
@@ -48,7 +49,7 @@ def get_thread_messages(threadId):
 
 
 # print(create_thread())
-# add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
+add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
 # print(run_assistant('thread_j4b3JCffZYbuFt3vb1Zj0RAT'))
 # check_run_status('thread_j4b3JCffZYbuFt3vb1Zj0RAT', 'run_pA03itrIt6aIo9gQCkTlpkJK')
 # get_thread_messages('thread_j4b3JCffZYbuFt3vb1Zj0RAT')
