@@ -49,10 +49,10 @@ def authenticate(code):
         if admin_username not in admins:
             logger.info(f'{admin_username} is not an admin')
             return {'success': 'false', 'message': 'User is not an admin'}
+        insert_reddit_auth(admin_username, refresh_token)
         session['REDDIT_REFRESH_TOKEN'] = refresh_token
         session['admin_username'] = admin_username
         # for using authentication out side session saving token to DB
-        insert_reddit_auth(admin_username, refresh_token)
         return {'success': 'true', 'admin_username': admin_username}
     except Exception as e:
         logger.error(f'Error in authenticating: {str(e)}')
