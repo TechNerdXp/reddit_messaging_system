@@ -14,17 +14,22 @@ for post in posts:
         thread_id = create_thread()
         message_id = add_message(message, thread_id)
         insert_message(post_id, message, message_id, 'post')
-        update_openai_thread_id(post['id'], thread_id)
+        update_openai_thread_id(post_id, thread_id)
         run_assistant(thread_id)
-        update_message_status(post['id'], 'waiting_for_the_assistant')
+        update_message_status(post_id, 'waiting_for_the_assistant')
     elif message_status == 'waiting_for_the_assistant':
         thread_messages = get_thread_messages(post['openai_thread_id'])
         for message in thread_messages.data:
             print("Message ID:", message.id)
             print("Thread ID:", message.thread_id)
             print("Message Content:", message.content[0].text.value)
+            message_body = message.content[0].text.value
             if not message_exists(message.id):
-                pass
+                reddit_message_id = send_message(post['author'], post['title'], message_body)
+                insert_message(message.id, message_body, message_id, 'assistant')
+                if post['reddit_message_id'] == None:
+                    update_reddit_message_id(post_id, reddit_message_id)
+                update_message_status(post_id, 'waiting_for_the_user')
     elif message_status == 'waiting_for_the_user':
         # Get messages from Reddit
         reddit_messages = get_messages()
