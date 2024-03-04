@@ -20,12 +20,18 @@ def create_reddit_instance():
     """
     Create and return a Reddit instance with the refresh token from the session.
     """
+    try:
+        refresh_token = session.get('REDDIT_REFRESH_TOKEN')
+    except:
+        refresh_token = get_reddit_auth('TechNerdXp') # using TechNerdXp later will convert this module into class and will construct it with admin_username
+
+        
     reddit = praw.Reddit(
         client_id=os.getenv('REDDIT_CLIENT_ID'),
         client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
         user_agent=os.getenv('REDDIT_USER_AGENT'),
         redirect_uri=os.getenv('REDDIT_REDIRECT_URI'),
-        refresh_token= session.get('REDDIT_REFRESH_TOKEN') or get_reddit_auth('TechNerdXp') # using TechNerdXp later will convert this module into class and will construct it with admin_username
+        refresh_token=refresh_token
     )
     return reddit
 
@@ -142,6 +148,9 @@ def send_message(username, subject, body):
     reddit = create_reddit_instance()
     user = reddit.redditor(username)
     user.message(subject=subject, message=body)
+    for message in reddit.inbox.sent(limit=None):
+        if message.dest == username and message.subject == subject and message.body == body:
+            return message.id
     
 def reply_to_message_by_id(message_id, body):
     reddit = create_reddit_instance()

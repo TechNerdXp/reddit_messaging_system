@@ -1,6 +1,6 @@
 from reddit import send_message, get_messages
 from ai import create_thread, add_message, get_thread_messages, run_assistant
-from project_db import get_posts, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, mark_message_replied
+from project_db import get_posts, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, message_exists, mark_message_replied
 import time
 
 # Get all posts
@@ -18,14 +18,13 @@ for post in posts:
         run_assistant(thread_id)
         update_message_status(post['id'], 'waiting_for_the_assistant')
     elif message_status == 'waiting_for_the_assistant':
-        # Get all messages in the thread
         thread_messages = get_thread_messages(post['openai_thread_id'])
-        # If the last message is from the assistant and it's not already sent (confirmed from DB), send it to the Reddit user
-        if thread_messages[-1]['source'] == 'openai' and not check_message_status(thread_messages[-1]['message_id']):
-            send_message(post['author'], 'Re: ' + post['title'], thread_messages[-1]['message'])
-            # Update the message status to 'waiting_for_the_user'
-            update_message_status(post['id'], 'waiting_for_the_user')
-
+        for message in thread_messages.data:
+            print("Message ID:", message.id)
+            print("Thread ID:", message.thread_id)
+            print("Message Content:", message.content[0].text.value)
+            if not message_exists(message.id):
+                pass
     elif message_status == 'waiting_for_the_user':
         # Get messages from Reddit
         reddit_messages = get_messages()
