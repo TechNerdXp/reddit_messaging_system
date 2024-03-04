@@ -39,17 +39,12 @@ def get_thread_messages(threadId):
     messages = client.beta.threads.messages.list(
         thread_id=threadId
     )
-    for message in messages.data:
-        print("Message ID:", message.id)
-        print("Thread ID:", message.thread_id)
-        print("Message Content:", message.content[0].text.value)
-        print('.................................................')
-        # print(messages)
+    # print(messages)
     return messages
 
 
 # print(create_thread())
-add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
+# add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
 # print(run_assistant('thread_j4b3JCffZYbuFt3vb1Zj0RAT'))
 # check_run_status('thread_j4b3JCffZYbuFt3vb1Zj0RAT', 'run_pA03itrIt6aIo9gQCkTlpkJK')
 # get_thread_messages('thread_j4b3JCffZYbuFt3vb1Zj0RAT')

@@ -160,7 +160,7 @@ def message_exists(message_id):
 
     conn.close()
 
-return result is not None
+    return result is not None
 
 def mark_message_replied(message_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
