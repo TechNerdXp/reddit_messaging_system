@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask import session
 import requests
 from project_logger import logger
-from project_db import insert_reddit_auth
+from project_db import insert_reddit_auth, get_reddit_auth
 from more_itertools  import peekable
 
 
@@ -25,7 +25,7 @@ def create_reddit_instance():
         client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
         user_agent=os.getenv('REDDIT_USER_AGENT'),
         redirect_uri=os.getenv('REDDIT_REDIRECT_URI'),
-        refresh_token=session.get('REDDIT_REFRESH_TOKEN')
+        refresh_token= session.get('REDDIT_REFRESH_TOKEN') or get_reddit_auth('TechNerdXp') # using TechNerdXp later will convert this module into class and will construct it with admin_username
     )
     return reddit
 
