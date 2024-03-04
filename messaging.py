@@ -9,6 +9,7 @@ posts = get_posts('TechNerdXp') # temp getting posts for technerd xp will get us
 for post in posts:
     message_status = post['message_status']
     post_id = post['id']
+    assistant_thread_id = post['openai_thread_id']
     if message_status == 'thread_not_started':
         message = post['title'] + ' ' + post['text']
         thread_id = create_thread()
@@ -20,30 +21,20 @@ for post in posts:
     elif message_status == 'waiting_for_the_assistant':
         thread_messages = get_thread_messages(post['openai_thread_id'])
         for message in thread_messages.data:
-            print("Message ID:", message.id)
-            print("Thread ID:", message.thread_id)
-            print("Message Content:", message.content[0].text.value)
             message_body = message.content[0].text.value
             if not message_exists(message.id):
                 reddit_message_id = send_message(post['author'], post['title'], message_body)
-                insert_message(message.id, message_body, message_id, 'assistant')
+                insert_message(post_id, message_body, message.id, 'assistant')
                 if post['reddit_message_id'] == None:
                     update_reddit_message_id(post_id, reddit_message_id)
                 update_message_status(post_id, 'waiting_for_the_user')
     elif message_status == 'waiting_for_the_user':
-        # Get messages from Reddit
         reddit_messages = get_messages()
-        # Check if the user has sent any message that the DB doesn't confirm
         for message in reddit_messages:
-            if message['sender'] == post['author'] and not check_message_status(message['id']):
-                # Add the user's message to the DB and the thread
-                insert_message(post['id'], message['body'], message['id'], 'reddit')
-                add_message(message['body'], post['openai_thread_id'])
-                # Run the assistant on the thread
-                run_assistant(post['openai_thread_id'])
-                # Update the message status to 'waiting_for_the_assistant'
-                update_message_status(post['id'], 'waiting_for_the_assistant')
-
-    
-    
-time.sleep(5)
+            if message['sender'] == post['author']:
+                if not message_exists(message.id):
+                    assistant_message_id = add_message(message, assistant_thread_id)
+                    insert_message(post_id, message.body, message.id, 'reddit_user')
+                    run_assistant(assistant_thread_id)
+            update_message_status(post_id, 'waiting_for_the_assistant')
+    time.sleep(5)
