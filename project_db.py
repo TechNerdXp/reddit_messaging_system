@@ -151,6 +151,17 @@ def insert_message(post_id, message, message_id, source):
     conn.commit()
     conn.close()
     
+def message_exists(message_id):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('SELECT id FROM messages WHERE id = ?', (message_id,))
+    result = c.fetchone()
+
+    conn.close()
+
+return result is not None
+
 def mark_message_replied(message_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
