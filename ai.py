@@ -1,13 +1,20 @@
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+
 load_dotenv()
 
-assistant_id = os.getenv("OPENAI_ASSISTENT_ID")
-client = OpenAI(
-  api_key=os.getenv("OPENAI_API_KEY"),
-)
+assistant_id = ("asst_wYulJO3kKe8ldfUTA106fKsZ")
+api_key = ("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")
 
+if not api_key:
+    raise ValueError("Missing OpenAI API Key")
+
+client = OpenAI(api_key=api_key)
+
+# rest of your code
+
+# rest of your code
 def create_thread():
     thread = client.beta.threads.create()
     return thread.id

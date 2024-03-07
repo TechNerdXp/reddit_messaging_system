@@ -1,8 +1,8 @@
 import sqlite3
 import os
 
-if not os.path.exists('logs'):
-    os.makedirs('logs')
+if not os.path.exists('db'):
+    os.makedirs('db')
     
 def create_tables():
     conn = sqlite3.connect('db/reddit_messaging_sys.db')

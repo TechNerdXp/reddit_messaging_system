@@ -12,7 +12,10 @@ from more_itertools  import peekable
 load_dotenv()
 
 user_subreddits = {
-    'TechNerdXp': ['Python', 'Java', 'Test']
+    'TechNerdXp': ['AskMechanics', 'Java', 'Python'],
+    'Heydrianpay': ['AskMechanics'],
+    'Partsnetwork878': ['AskMechanics'],
+    'hghgj67': ['AskMechanics']
 }
 
 
@@ -23,7 +26,7 @@ def create_reddit_instance():
     try:
         refresh_token = session.get('REDDIT_REFRESH_TOKEN')
     except:
-        refresh_token = get_reddit_auth('TechNerdXp') # using TechNerdXp later will convert this module into class and will construct it with admin_username
+        refresh_token = get_reddit_auth('Heydrianpay') # using TechNerdXp later will convert this module into class and will construct it with admin_username
 
         
     reddit = praw.Reddit(
@@ -81,7 +84,6 @@ def revoke_auth():
         data = {"token": token, "token_type_hint": "access_token"}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
         session.clear()
-        logger.debug(vars(response))
         return {'success': 'true'}
     except Exception as e:
         logger.error(f'Error in revoking token: {str(e)}')
@@ -91,7 +93,7 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
     if subreddit_name not in user_subreddits[session.get('admin_username')]:
         logger.error(f'The subreddit {subreddit_name} is not assigned to the current user.')
         return {'error': f'The subreddit {subreddit_name} is not assigned to the current user.'}
-
+    limit = 2 # low limit for testing
     reddit = create_reddit_instance()
     after = None
     all_posts_data = []

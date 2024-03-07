@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, reply_to_message_by_id
 from filters import filter_posts
@@ -9,10 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='client_build')
 app.secret_key = os.getenv('SECRET_KEY')
 CORS(app, supports_credentials=True)
-
 
 @app.route('/api/reddit/auth-url')
 def reddit_auth_url():
@@ -63,5 +62,13 @@ def test():
     # return send_message('NadeemGorsi', 'Just a test message', 'test message 4')
     # return reply_to_message_by_id('26rcx6t', 'body body2 body2...')
     
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+    
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5004)
