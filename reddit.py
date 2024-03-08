@@ -2,7 +2,6 @@ import praw
 import os
 import time
 from dotenv import load_dotenv
-from flask import session
 import requests
 from project_logger import logger
 from project_db import insert_reddit_auth, get_reddit_auth
@@ -12,15 +11,12 @@ from more_itertools  import peekable
 
 load_dotenv()
 
-def create_reddit_instance():
+def create_reddit_instance(username=None, refresh_token=None):
     """
-    Create and return a Reddit instance with the refresh token from the session.
+    Creates a Reddit instance using the provided username and refresh token.
     """
-    try:
-        refresh_token = session.get('REDDIT_REFRESH_TOKEN')
-    except:
-        refresh_token = get_reddit_auth('Heydrianpay') # using Heydrianpay later will convert this module into class and will construct it with admin_username
-
+    if refresh_token is None and username is not None:
+        refresh_token = get_reddit_auth(username)
         
     reddit = praw.Reddit(
         client_id=os.getenv('REDDIT_CLIENT_ID'),
@@ -52,39 +48,36 @@ def authenticate(code):
             logger.info(f'{admin_username} is not an admin')
             return {'success': 'false', 'message': 'User is not an admin'}
         insert_reddit_auth(admin_username, refresh_token)
-        session['REDDIT_REFRESH_TOKEN'] = refresh_token
-        session['admin_username'] = admin_username
-        # for using authentication out side session saving token to DB
-        return {'success': 'true', 'admin_username': admin_username}
+        return {'success': 'true', 'admin_username': admin_username, 'refresh_token': refresh_token}
     except Exception as e:
         logger.error(f'Error in authenticating: {str(e)}')
         return {'success': 'false', 'error': str(e)}
 
-def is_authenticated():
+def is_authenticated(username):
+    if username is None:
+        return {'success': 'false', 'isAuthenticated': False, 'error': 'No username provided or session expired.'}
     try:
         reddit = create_reddit_instance()
-        isAuthenticated = reddit.user.me() is not None and session.get('admin_username') is not None
+        isAuthenticated = reddit.user.me() is not None
     except Exception as e:
         logger.error(f'Error in checking auth status: {str(e)}')
-        return {'success': 'false', 'error': str(e)}
-    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'admin_username': session.get('admin_username')}
+        return {'success': 'false', 'isAuthenticated': False, 'error': str(e)}
+    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'admin_username': username}
 
-def revoke_auth():
+def revoke_auth(token):
     try:
-        token = session.get('REDDIT_REFRESH_TOKEN')
         url = "https://www.reddit.com/api/v1/revoke_token"
         headers = {"User-Agent": os.getenv('REDDIT_USER_AGENT')}  
         data = {"token": token, "token_type_hint": "access_token"}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
-        session.clear()
         return {'success': 'true'}
     except Exception as e:
         logger.error(f'Error in revoking token: {str(e)}')
         return {'success': 'false', 'error': str(e)}
 
-def reddit_posts(subreddit_name, keywords, max_pages=10, postType='new', limit=100):
+def reddit_posts(admin, subreddit_name, keywords, max_pages=10, postType='new', limit=100):
     
-    limit = 2 # low limit for testing
+    limit = 2 # temp override low limit for testing
     reddit = create_reddit_instance()
     after = None
     all_posts_data = []
@@ -108,7 +101,7 @@ def reddit_posts(subreddit_name, keywords, max_pages=10, postType='new', limit=1
 
         posts_data = []
         for post in posts:
-            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name if post.author else None, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': session.get('admin_username')})
+            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name if post.author else None, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': admin})
         
         after = posts_data[-1]['id']
         all_posts_data.extend(posts_data)
@@ -118,8 +111,7 @@ def reddit_posts(subreddit_name, keywords, max_pages=10, postType='new', limit=1
     all_posts_data = filter_posts(all_posts_data, keywords, False, 80)
     return all_posts_data
 
-def get_messages():
-    reddit = create_reddit_instance()
+def get_messages(reddit):
     messages = []
     # reddit.inbox.all()
     # reddit.inbox.unread()
@@ -137,16 +129,14 @@ def get_messages():
         messages.append({'id': message.id, 'subject': message.subject, 'body': message.body, 'sender': str(message.author), 'time': message.created_utc, 'replies': replies})
     return messages
 
-def send_message(username, subject, body):
-    username = 'NadeemGorsi' # temporary override to avoid swarming users with test messages.
-    reddit = create_reddit_instance()
-    user = reddit.redditor(username)
+def send_message(recipient, subject, body, reddit):
+    recipient = 'NadeemGorsi' # temporary override to avoid swarming users with test messages.
+    user = reddit.redditor(recipient)
     user.message(subject=subject, message=body)
     for message in reddit.inbox.sent(limit=None):
-        if message.dest == username and message.subject == subject and message.body == body:
+        if message.dest == recipient and message.subject == subject and message.body == body:
             return message.id
     
-def reply_to_message_by_id(message_id, body):
-    reddit = create_reddit_instance()
+def reply_to_message_by_id(message_id, body, reddit):
     message = reddit.inbox.message(message_id)
     message.reply(body)

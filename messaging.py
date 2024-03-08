@@ -3,7 +3,7 @@ from ai import create_thread, add_message, get_thread_messages, run_assistant
 from project_db import get_posts, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, message_exists, mark_message_replied
 import time
 
-user_subreddits = {
+admin_subreddits = {
     'TechNerdXp': {
         'AskMechanics': ['My car won\'t start', 'an issue with my car', 'my car is making a noise', 'transmission issue', 'knocking sound', 'crank no start'],
         'Java': ['ai', 'machine learning'],
@@ -20,13 +20,16 @@ user_subreddits = {
     }
 }
 
-for user, subreddits in user_subreddits.items():
-    print(user)
+for admin, subreddits in admin_subreddits.items():
+    print(admin)
     for subreddit_name, keywords in subreddits.items():
         print(subreddit_name)
         print(keywords)
-        posts = reddit_posts(subreddit_name, keywords)
-
+        try:
+            posts = reddit_posts(admin, subreddit_name, keywords)
+        except Exception as e:
+            print(e)
+            print(str(e))
 exit()
     
     
