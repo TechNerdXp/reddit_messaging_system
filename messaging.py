@@ -23,10 +23,12 @@ admin_subreddits = {
 
 for admin, subreddits in admin_subreddits.items():
     print(admin)
-    reddit = create_reddit_instance(admin)
-    if not is_authenticated(admin):
+    print(is_authenticated(admin)['success'])
+    if not is_authenticated(admin)['success']:
         print(f'{admin} is not authenticated. Pls authenticate using UI')
         continue
+    
+    reddit = create_reddit_instance(admin)
     for subreddit_name, keywords in subreddits.items():
         print(subreddit_name)
         print(keywords)

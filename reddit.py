@@ -34,7 +34,7 @@ def auth_url():
         return {'authUrl': auth_url}
     except Exception as e:
         logger.error(f'Error in creating auth URL: {str(e)}')
-        return {'success': 'false', 'authUrl': '#'}
+        return {'success': False, 'authUrl': '#'}
 
 def authenticate(code):
     try:
@@ -46,23 +46,23 @@ def authenticate(code):
         # logger.debug(admins)
         if admin_username not in admins:
             logger.info(f'{admin_username} is not an admin')
-            return {'success': 'false', 'message': 'User is not an admin'}
+            return {'success': False, 'message': 'User is not an admin'}
         insert_reddit_auth(admin_username, refresh_token)
-        return {'success': 'true', 'admin_username': admin_username, 'refresh_token': refresh_token}
+        return {'success': True, 'admin_username': admin_username, 'refresh_token': refresh_token}
     except Exception as e:
         logger.error(f'Error in authenticating: {str(e)}')
-        return {'success': 'false', 'error': str(e)}
+        return {'success': False, 'error': str(e)}
 
 def is_authenticated(username):
     if username is None:
-        return {'success': 'false', 'isAuthenticated': False, 'error': 'No username provided or session expired.'}
+        return {'success': False, 'isAuthenticated': False, 'error': 'No username provided or session expired.'}
     try:
         reddit = create_reddit_instance(username)
         isAuthenticated = reddit.user.me() is not None
     except Exception as e:
         logger.error(f'Error in checking auth status: {str(e)}')
-        return {'success': 'false', 'isAuthenticated': False, 'error': str(e)}
-    return {'success': 'true', 'isAuthenticated': isAuthenticated, 'admin_username': username}
+        return {'success': False, 'isAuthenticated': False, 'error': str(e)}
+    return {'success': True, 'isAuthenticated': isAuthenticated, 'admin_username': username}
 
 def revoke_auth(token):
     try:
@@ -70,10 +70,10 @@ def revoke_auth(token):
         headers = {"User-Agent": os.getenv('REDDIT_USER_AGENT')}  
         data = {"token": token, "token_type_hint": "access_token"}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
-        return {'success': 'true'}
+        return {'success': True}
     except Exception as e:
         logger.error(f'Error in revoking token: {str(e)}')
-        return {'success': 'false', 'error': str(e)}
+        return {'success': False, 'error': str(e)}
 
 def reddit_posts(admin, subreddit_name, keywords, max_pages=10, postType='new', limit=100):
     
