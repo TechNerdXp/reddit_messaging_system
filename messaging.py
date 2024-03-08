@@ -23,7 +23,6 @@ admin_subreddits = {
 
 for admin, subreddits in admin_subreddits.items():
     print(admin)
-    print(is_authenticated(admin)['success'])
     if not is_authenticated(admin)['success']:
         print(f'{admin} is not authenticated. Pls authenticate using UI')
         continue
@@ -37,7 +36,6 @@ for admin, subreddits in admin_subreddits.items():
             for post in posts:
                 insert_post(post)
                 insert_user(post['author'])
-            print(posts)
         except Exception as e:
             print(e)
             print(str(e))
@@ -62,7 +60,7 @@ for admin, subreddits in admin_subreddits.items():
             thread_messages = get_thread_messages(post['openai_thread_id'])
             for message in thread_messages.data:
                 message_body = message.content[0].text.value
-                logger.debug(f'message author: {message.role}')
+                logger.debug(f'message role: {message.role}')
                 if not message_exists(message.id and message.role == 'assistant'):
                     subject = post['title']
                     reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
