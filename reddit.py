@@ -6,18 +6,11 @@ from flask import session
 import requests
 from project_logger import logger
 from project_db import insert_reddit_auth, get_reddit_auth
+from filters import filter_posts
 from more_itertools  import peekable
 
 
 load_dotenv()
-
-user_subreddits = {
-    'TechNerdXp': ['AskMechanics', 'Java', 'Python'],
-    'Heydrianpay': ['AskMechanics'],
-    'Partsnetwork878': ['AskMechanics'],
-    'hghgj67': ['AskMechanics']
-}
-
 
 def create_reddit_instance():
     """
@@ -89,10 +82,8 @@ def revoke_auth():
         logger.error(f'Error in revoking token: {str(e)}')
         return {'success': 'false', 'error': str(e)}
 
-def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
-    if subreddit_name not in user_subreddits[session.get('admin_username')]:
-        logger.error(f'The subreddit {subreddit_name} is not assigned to the current user.')
-        return {'error': f'The subreddit {subreddit_name} is not assigned to the current user.'}
+def reddit_posts(subreddit_name, keywords, max_pages=10, postType='new', limit=100):
+    
     limit = 2 # low limit for testing
     reddit = create_reddit_instance()
     after = None
@@ -123,7 +114,8 @@ def reddit_posts(subreddit_name, max_pages=100, postType='top', limit=100):
         all_posts_data.extend(posts_data)
 
         time.sleep(int(os.getenv('REDDIT_RATE_LIMIT')))
-
+        
+    all_posts_data = filter_posts(all_posts_data, keywords, False, 80)
     return all_posts_data
 
 def get_messages():
