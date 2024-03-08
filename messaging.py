@@ -61,7 +61,7 @@ for admin, subreddits in admin_subreddits.items():
             for message in thread_messages.data:
                 message_body = message.content[0].text.value
                 logger.debug(f'message role: {message.role}')
-                if not message_exists(message.id and message.role == 'assistant'):
+                if not message_exists(message.id) and message.role == 'assistant':
                     subject = post['title']
                     reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
                     insert_message(post_id, message_body, message.id, 'assistant')

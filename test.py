@@ -1,12 +1,7 @@
+from ai import get_thread_messages
 
-# print(send_message(reddit, 'NadeemGorsi', 'subject', 'test message body2'))def send_message(reddit, username, subject, body)
-# print(get_messages(reddit))
+messages = get_thread_messages('thread_hXiw2wGK2126ZGNx06ng2FCT')
 
-# def dump_to_csv(data, filename='temp.csv'):
-#     keys = data[0].keys()
-
-#     with open(filename, 'w', newline='', encoding='utf-8') as output_file:
-#         dict_writer = csv.DictWriter(output_file, keys)
-#         dict_writer.writeheader()
-#         dict_writer.writerows(data)
-
+for message in messages.data:
+        print(message.role)
+        print(message.content[0].text.value)
