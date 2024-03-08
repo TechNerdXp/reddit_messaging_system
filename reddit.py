@@ -57,7 +57,7 @@ def is_authenticated(username):
     if username is None:
         return {'success': 'false', 'isAuthenticated': False, 'error': 'No username provided or session expired.'}
     try:
-        reddit = create_reddit_instance()
+        reddit = create_reddit_instance(username)
         isAuthenticated = reddit.user.me() is not None
     except Exception as e:
         logger.error(f'Error in checking auth status: {str(e)}')

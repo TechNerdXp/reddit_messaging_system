@@ -1,6 +1,6 @@
-from reddit import send_message, get_messages, reddit_posts
+from reddit import send_message, get_messages, reddit_posts, is_authenticated
 from ai import create_thread, add_message, get_thread_messages, run_assistant
-from project_db import get_posts, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, message_exists, mark_message_replied
+from project_db import get_posts, insert_post, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, message_exists, mark_message_replied
 import time
 
 admin_subreddits = {
@@ -21,12 +21,18 @@ admin_subreddits = {
 }
 
 for admin, subreddits in admin_subreddits.items():
-    print(admin)
+    if not is_authenticated(admin):
+        print(f'{admin} is not authenticated. Pls authenticate using UI')
+        continue
     for subreddit_name, keywords in subreddits.items():
         print(subreddit_name)
         print(keywords)
         try:
             posts = reddit_posts(admin, subreddit_name, keywords)
+            for post in posts:
+                insert_post(post)
+                insert_user(post['author'])
+            print(posts)
         except Exception as e:
             print(e)
             print(str(e))

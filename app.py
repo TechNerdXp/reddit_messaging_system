@@ -21,14 +21,18 @@ def reddit_authenticate():
     code = request.json['code']
     res = authenticate(code)
     if(res['success'] == 'true'):
+        logger.debug(res)
+        logger.debug(res['admin_username'])
+        logger.debug(res['refresh_token'])
         session['REDDIT_REFRESH_TOKEN'] = res['refresh_token']
         session['admin_username'] = res['admin_username']
-        return jsonify({'success': 'true', 'admin_username': admin_username})
+        return jsonify({'success': 'true', 'admin_username': res['admin_username']})
     else:
         return jsonify(res)
 @app.route('/api/reddit/is-authenticated', methods=['GET'])
 def reddit_is_authenticated():
     username = session.get('admin_username')
+    logger.debug(f'username frm session: {username}')
     return jsonify(is_authenticated(username))
 
 @app.route('/api/reddit/revoke-auth', methods=['GET'])
