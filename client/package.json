@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://proud-moral-seal.ngrok-free.app/client_build", 
+  "homepage": "https://reddiappinterface.ngrok-free.app/client_build", 
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@headlessui/react": "^1.7.18",
