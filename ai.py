@@ -4,8 +4,8 @@ from openai import OpenAI
 
 load_dotenv()
 
-assistant_id = ("asst_wYulJO3kKe8ldfUTA106fKsZ")
-api_key = ("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")
+assistant_id = os.getenv('OPENAI_ASSISTANT_ID')
+api_key = os.getenv('OPENAI_API_KEY')
 
 if not api_key:
     raise ValueError("Missing OpenAI API Key")
