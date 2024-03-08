@@ -19,7 +19,7 @@ def create_reddit_instance():
     try:
         refresh_token = session.get('REDDIT_REFRESH_TOKEN')
     except:
-        refresh_token = get_reddit_auth('Heydrianpay') # using TechNerdXp later will convert this module into class and will construct it with admin_username
+        refresh_token = get_reddit_auth('Heydrianpay') # using Heydrianpay later will convert this module into class and will construct it with admin_username
 
         
     reddit = praw.Reddit(
