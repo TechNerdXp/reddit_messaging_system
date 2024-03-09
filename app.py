@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, request, send_from_directory, session
 from flask_cors import CORS
-from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, reply_to_message_by_id
+from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, send_reply
 from project_db import insert_post, insert_user, get_posts
 from project_logger import logger
 from dotenv import load_dotenv

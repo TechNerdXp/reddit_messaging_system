@@ -137,6 +137,6 @@ def send_message(recipient, subject, body, reddit):
         if message.dest == recipient and message.subject == subject and message.body == body:
             return message.id
     
-def reply_to_message_by_id(message_id, body, reddit):
+def send_reply(message_id, body, reddit):
     message = reddit.inbox.message(message_id)
     message.reply(body)
