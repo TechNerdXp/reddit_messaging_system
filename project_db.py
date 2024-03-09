@@ -20,6 +20,7 @@ def create_tables():
         admin TEXT,
         openai_thread_id TEXT,
         reddit_message_id TEXT,
+        reddit_reply_id TEXT,
         message_status TEXT DEFAULT 'thread_not_started')
     ''')
 
@@ -34,10 +35,9 @@ def create_tables():
         (id INTEGER PRIMARY KEY AUTOINCREMENT,
         post_id TEXT,
         message TEXT,
-        message_id TEXT UNIQUE,
+        message_id TEXT,
         source TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-        replied INTEGER DEFAULT 0,
         FOREIGN KEY(post_id) REFERENCES posts(id))
     ''')
     
@@ -155,26 +155,12 @@ def message_exists(message_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
-    c.execute('SELECT id FROM messages WHERE id = ?', (message_id,))
+    c.execute('SELECT id FROM messages WHERE message_id = ?', (message_id,))
     result = c.fetchone()
 
     conn.close()
 
     return result is not None
-
-def mark_message_replied(message_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Mark a message as replied
-    c.execute('''
-        UPDATE messages
-        SET replied = 1
-        WHERE message_id = ?
-    ''', (message_id,))
-
-    conn.commit()
-    conn.close()
     
 def insert_user(username):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')

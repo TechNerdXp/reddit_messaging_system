@@ -31,7 +31,6 @@ def run_assistant(threadId):
     run = client.beta.threads.runs.create(
         thread_id=threadId,
         assistant_id=assistant_id,
-        instructions="pls don't send the message back with role assistant. instead only send your response with role assistant and orignal message with role user",
     )
     return run.id
 
