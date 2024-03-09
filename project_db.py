@@ -105,6 +105,26 @@ def update_reddit_message_id(post_id, reddit_message_id):
 
     conn.commit()
     conn.close()
+
+def update_reddit_reply_id(post_id, reddit_reply_id):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        UPDATE posts SET reddit_reply_id = ? WHERE id = ?
+    ''', (reddit_reply_id, post_id))
+
+    conn.commit()
+    conn.close()
+    
+def get_reddit_reply_id(post_id):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('SELECT reddit_reply_id FROM posts WHERE id = ?', (post_id,))
+    result = c.fetchone()
+    conn.close()
+    return result[0] if result else None
     
 def check_message_status(post_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
