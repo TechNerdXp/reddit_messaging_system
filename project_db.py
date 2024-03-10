@@ -263,11 +263,11 @@ def update_config(key, value):
 def insert_initial_configs():
     configs = [
         ('REDDIT_RATE_LIMIT', '30'),
+        ('DELAY_BETWEEN_MESSAGES', '200'),
         ('REDDIT_ADMINS', 'Heydrianpay,Partsnetwork878,hghgj67,TechNerdXp,NadeemGorsi'),
     ]
     for key, value in configs:
         update_config(key, value)
-
 
 create_tables()
 

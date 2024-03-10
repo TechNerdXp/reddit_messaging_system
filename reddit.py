@@ -4,7 +4,7 @@ import time
 from dotenv import load_dotenv
 import requests
 from project_logger import logger
-from project_db import insert_reddit_auth, get_reddit_auth
+from project_db import insert_reddit_auth, get_reddit_auth, get_config
 from filters import filter_posts
 from more_itertools  import peekable
 
@@ -41,7 +41,7 @@ def authenticate(code):
         reddit = create_reddit_instance()
         refresh_token = reddit.auth.authorize(code)
         user = reddit.user.me()
-        admins = os.getenv('REDDIT_ADMINS').split(',')
+        admins = get_config('REDDIT_ADMINS').split(',')
         admin_username = user.name
         # logger.debug(admins)
         if admin_username not in admins:
@@ -106,7 +106,7 @@ def reddit_posts(admin, subreddit_name, keywords, max_pages=10, postType='new', 
         after = posts_data[-1]['id']
         all_posts_data.extend(posts_data)
 
-        time.sleep(int(os.getenv('REDDIT_RATE_LIMIT')))
+        time.sleep(int(get_config('REDDIT_RATE_LIMIT')))
         
     all_posts_data = filter_posts(all_posts_data, keywords, False, 80)
     return all_posts_data

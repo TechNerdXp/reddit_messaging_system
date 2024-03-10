@@ -1,6 +1,10 @@
 from reddit import send_message, send_reply, get_messages, reddit_posts, create_reddit_instance, is_authenticated
 from ai import create_thread, add_message, get_thread_messages, run_assistant
-from project_db import get_posts, insert_post, insert_user, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, update_reddit_reply_id, get_reddit_reply_id, message_exists
+from project_db import (
+    get_posts, insert_post, insert_user, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, 
+    update_reddit_reply_id, get_reddit_reply_id, message_exists, get_config
+)
+
 import time
 from project_logger import logger
 
@@ -61,7 +65,7 @@ while True:
                             reddit_message_id = send_reply(message_to_reply, message_body, reddit)
                         insert_message(post_id, message_body, message.id, 'assistant')
                         update_message_status(post_id, 'waiting_for_the_user')
-                    time.sleep(200)
+                    time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
             elif message_status == 'waiting_for_the_user':
                 print('yes')
                 reddit_messages = get_messages(reddit)
@@ -77,7 +81,6 @@ while True:
                                 assistant_message_id = add_message(reply['body'], assistant_thread_id)
                                 insert_message(post_id, reply['body'], message['id'], 'reddit_user_reply')
                                 update_reddit_reply_id(post_id, reply_id)
-                                run_assistant(assistant_thread_id)
                                 update_message_status(post_id, 'waiting_for_the_assistant')
-            time.sleep(5)
+                run_assistant(assistant_thread_id)
 time.sleep(30)
