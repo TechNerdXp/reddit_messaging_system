@@ -82,16 +82,14 @@ def update_configuration(key):
 
 @app.route('/api/get-admins', methods=['GET'])
 def get_admins():
-    admins = get_configs('REDDIT_ADMINS').split(',')
+    admins = get_config('REDDIT_ADMINS').split(',')
     return jsonify(admins)
 
-@app.route('/api/user-subreddits', methods=['GET'])
-def get_user_subreddits():
-    admins = get_configs('REDDIT_ADMINS').split(',')
-    user_subreddits = []
-    for admin in admins:
-        user_subreddits.append(get_user_subreddits(admin))
-    return jsonify(user_subreddits)
+@app.route('/api/user-subreddits/<admin>', methods=['GET'])
+def get_user_subreddit_from_db(admin):
+    admins = get_config('REDDIT_ADMINS').split(',')
+    if admin in admins:
+        return jsonify(get_user_subreddits(admin))
 
 @app.route('/api/user-subreddits', methods=['POST'])
 def insert_user_subreddits():

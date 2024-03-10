@@ -1,9 +1,15 @@
-# from ai import get_thread_messages
-# messages = get_thread_messages('thread_hXiw2wGK2126ZGNx06ng2FCT')
+import sqlite3
 
-# for message in messages.data:
-#         print(message.role)
-#         print(message.content[0].text.value)
+def delete_all_records():
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
 
-from project_db import insert_initial_configs
-insert_initial_configs()
+    # Execute the SQL statement to delete all records
+    c.execute("DELETE FROM user_subreddits")
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+# Call the function
+delete_all_records()
