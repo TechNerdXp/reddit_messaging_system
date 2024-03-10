@@ -5,21 +5,8 @@ import time
 from project_logger import logger
 
 while True:
-    admin_subreddits = {
-        'TechNerdXp': {
-            'Java': ['ai', 'machine learning'],
-            'Python': ['ai', 'machine learning']
-        },
-        # 'hghgj67': {
-        #     'AskMechanics': ['car'],
-        # },
-        'Heydrianpay': {
-            'AskMechanics': ['My car won\'t start', 'an issue with my car', 'my car is making a noise', 'transmission issue', 'knocking sound', 'crank no start'],
-        },
-        # 'Partsnetwork878': {
-        #     'AskMechanics': ['My car won\'t start', 'an issue with my car', 'my car is making a noise', 'transmission issue', 'knocking sound', 'crank no start'],
-        # },
-    }
+    with open('admin_subreddits.json', 'r') as f:
+        admin_subreddits = loaded_admin_subreddits = json.load(f)      
 
     for admin, subreddits in admin_subreddits.items():
         print(admin)

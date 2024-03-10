@@ -1,0 +1,9 @@
+{
+    "TechNerdXp": {
+        "Java": ["ai", "machine learning"], 
+        "Python": ["ai", "machine learning"]
+    }, 
+    "Heydrianpay": {
+        "AskMechanics": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start"]
+    }
+}
