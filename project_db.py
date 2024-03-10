@@ -223,10 +223,14 @@ def get_reddit_auth(admin_username):
 
 def get_configs():
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     c.execute('SELECT * FROM configs')
-    configs = c.fetchall()
+    rows = c.fetchall()
+
+    # Convert rows to a dictionary
+    configs = {row['key']: row['value'] for row in rows}
 
     conn.close()
 
@@ -258,7 +262,6 @@ def update_config(key, value):
 
 def insert_initial_configs():
     configs = [
-        Add your initial configs here
         ('REDDIT_RATE_LIMIT', '30'),
         ('REDDIT_ADMINS', 'Heydrianpay,Partsnetwork878,hghgj67,TechNerdXp,NadeemGorsi'),
     ]
@@ -267,7 +270,6 @@ def insert_initial_configs():
 
 
 create_tables()
-insert_initial_configs()
 
 
 

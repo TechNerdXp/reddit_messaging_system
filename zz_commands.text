@@ -1,3 +1,9 @@
 ngrok http --domain=proud-moral-seal.ngrok-free.app 3000
 pip freeze > requirements.txt
 pip install -r requirements.txt
+
+package.json homepage value for Abdou virtual machine
+  "homepage": "https://reddiappinterface.ngrok-free.app/client_build", 
+package.json homepage value for my machine
+  "homepage": "https://proud-moral-seal.ngrok-free.app/client_build", 
+

@@ -2,13 +2,14 @@ import os
 from flask import Flask, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, send_reply
-from project_db import insert_post, insert_user, get_posts
+from project_db import insert_post, insert_user, get_posts, get_configs, update_config
 from project_logger import logger
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__, static_folder='client_build')
+# app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 CORS(app, supports_credentials=True)
 
@@ -43,7 +44,6 @@ def reddit_revoke_auth():
         session.clear()
     return jsonify(res)
 
-
 @app.route('/api/reddit/fetch-posts', methods=['POST'])
 def get_reddit_posts():
     data = request.get_json()
@@ -60,11 +60,22 @@ def get_reddit_posts():
 
     return jsonify(dataFromReddit)
 
-
 @app.route('/api/db/posts', methods=['GET'])
 def get_db_posts():
     posts = get_posts()
     return jsonify(posts)
+
+@app.route('/api/configs', methods=['GET'])
+def get_configurations():
+    configs = get_configs()
+    logger.debug({'configs': jsonify(configs)})
+    return jsonify(configs)
+
+@app.route('/api/configs/<key>', methods=['PUT'])
+def update_configuration(key):
+    value = request.json['value']
+    update_config(key, value)
+    return jsonify({'status': 'success'})
 
 @app.route('/api/test', methods=['GET'])
 def test():
