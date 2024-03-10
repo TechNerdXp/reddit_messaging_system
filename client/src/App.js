@@ -41,7 +41,7 @@ function App() {
           <Route path="/posts" element={<PostsTable />} />
           <Route path="/reddit_callback" element={<RedditCallback />} />
           <Route path="/reddit_auth" element={<RedditAuth />} /> 
-          <ConfigUpdater path="/configs" element={<TestComponent />} /> 
+          <Route path="/configs" element={<ConfigUpdater />} /> 
           <Route path="/test" element={<TestComponent />} /> 
         </Routes>
       </div>

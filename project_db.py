@@ -46,6 +46,12 @@ def create_tables():
         (admin_username TEXT PRIMARY KEY,
         refresh_token TEXT)
     ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS configs
+        (key TEXT PRIMARY KEY,
+        value TEXT)
+    ''')
 
 
     conn.commit()
@@ -215,8 +221,53 @@ def get_reddit_auth(admin_username):
 
     return result[0] if result else None
 
-create_tables()
+def get_configs():
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
 
+    c.execute('SELECT * FROM configs')
+    configs = c.fetchall()
+
+    conn.close()
+
+    return configs
+    
+def get_config(key):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute("SELECT value FROM configs WHERE key=?", (key,))
+    result = c.fetchone()
+
+    conn.close()
+
+    if result is None:
+        return None
+    else:
+        return result[0]
+
+def update_config(key, value):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute("INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)", (key, value))
+    c.execute("UPDATE configs SET value=? WHERE key=?", (value, key))
+
+    conn.commit()
+    conn.close()
+
+def insert_initial_configs():
+    configs = [
+        Add your initial configs here
+        ('REDDIT_RATE_LIMIT', '30'),
+        ('REDDIT_ADMINS', 'Heydrianpay,Partsnetwork878,hghgj67,TechNerdXp,NadeemGorsi'),
+    ]
+    for key, value in configs:
+        update_config(key, value)
+
+
+create_tables()
+insert_initial_configs()
 
 
 
