@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PostTypes from './PostTypes'
+import Select from './Select'
 import { Switch } from '@headlessui/react';
 import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css'
@@ -50,6 +50,14 @@ function RedditPosts({ posts, setPosts }) {
         setExactMatch(value);
     };
 
+    const postTypes = [
+        { id: 1, name: 'Hot', value: 'hot' },
+        { id: 2, name: 'New', value: 'new' },
+        { id: 3, name: 'Controversial', value: 'controversial' },
+        { id: 4, name: 'Rising', value: 'rising' },
+        { id: 5, name: 'Top', value: 'top' },
+      ];
+
     return (
         <div className="p-6 mx-auto rounded-xl shadow-md m-3 w-full bg-gradient-to-r from-indigo-100 via-purple-100 to-blue-100">
             <div className="flex justify-between">
@@ -75,10 +83,8 @@ function RedditPosts({ posts, setPosts }) {
                 </label>
                 <label className="w-1/3 ml-2 z-10">
                     <span className="label-text">&nbsp;Post Type:&nbsp;</span>
-                    <PostTypes selected={postType} onPostTypeChange={handlePostTypeChange} />
-
+                    <Select options={postTypes} selected={postType} onPostTypeChange={handlePostTypeChange} />
                 </label>
-                
             </div>
             <div className="flex justify-between items-end">
                 <div className="pt-6 h-22 w-3/4 mr-2 text-wrap">

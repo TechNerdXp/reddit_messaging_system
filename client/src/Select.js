@@ -1,19 +1,11 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
-const postTypes = [
-  { id: 1, name: 'Hot', value: 'hot' },
-  { id: 2, name: 'New', value: 'new' },
-  { id: 3, name: 'Controversial', value: 'controversial' },
-  { id: 4, name: 'Rising', value: 'rising' },
-  { id: 5, name: 'Top', value: 'top' },
-]
-
-export default function PostTypes({ selected, onPostTypeChange }) {
+export default function Select({ options, selected, onChange }) {
   return (
     <div className="w-full relative">
-      <Listbox value={selected} onChange={onPostTypeChange}>
+      <Listbox value={selected} onChange={onChange}>
         <div className="relative mt-1">
           <Listbox.Button className="w-full relative field">
             <span className="block truncate">{selected.name}</span>
@@ -31,15 +23,15 @@ export default function PostTypes({ selected, onPostTypeChange }) {
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-              {postTypes.map((postType, postTypeIdx) => (
+              {options.map((option, optionIdx) => (
                 <Listbox.Option
-                  key={postTypeIdx}
+                  key={optionIdx}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                       active ? 'bg-green-100 text-green-900' : 'text-gray-900'
                     }`
                   }
-                  value={postType}
+                  value={option}
                 >
                   {({ selected }) => (
                     <>
@@ -48,7 +40,7 @@ export default function PostTypes({ selected, onPostTypeChange }) {
                           selected ? 'font-medium' : 'font-normal'
                         }`}
                       >
-                        {postType.name}
+                        {option.name}
                       </span>
                       {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
