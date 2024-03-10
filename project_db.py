@@ -253,8 +253,6 @@ def get_config(key):
 def update_config(key, value):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
-
-    c.execute("INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)", (key, value))
     c.execute("UPDATE configs SET value=? WHERE key=?", (value, key))
 
     conn.commit()
@@ -262,8 +260,8 @@ def update_config(key, value):
 
 def insert_initial_configs():
     configs = [
-        ('REDDIT_MAX_PAGES_PER_SUBREDDIT', '2'),
         ('REDDIT_POST_TYPE', 'new'),
+        ('REDDIT_MAX_PAGES_PER_SUBREDDIT', '2'),
         ('REDDIT_RATE_LIMIT', '30'),
         ('DELAY_BETWEEN_MESSAGES', '200'),
         ('REDDIT_ADMINS', 'Heydrianpay,Partsnetwork878,hghgj67,TechNerdXp,NadeemGorsi'),

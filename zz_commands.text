@@ -7,3 +7,4 @@ package.json homepage value for Abdou virtual machine
 package.json homepage value for my machine
   "homepage": "https://proud-moral-seal.ngrok-free.app/client_build", 
 
+ngrok http --domain=https://reddiappinterface.ngrok-free.app 5010
