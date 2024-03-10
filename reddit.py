@@ -75,16 +75,12 @@ def revoke_auth(token):
         logger.error(f'Error in revoking token: {str(e)}')
         return {'success': False, 'error': str(e)}
 
-def reddit_posts(admin, subreddit_name, keywords, max_pages=None, limit=None, postType=None):
-    # is none max_pages get_config('REDDIT_MAX_PAGES_PER_SUBREDDIT')
+def reddit_posts(admin, subreddit_name, keywords, max_pages=None, postType=None, limit=100):
     if max_pages is None:
         max_pages = int(get_config('REDDIT_MAX_PAGES_PER_SUBREDDIT'))
-    if limit is None:
-        limit = int(get_config('REDDIT_POSTS_PER_REQUEST'))
     if postType is None:
         postType = get_config('REDDIT_POST_TYPE')
-
-    limit = 2 # temp override low limit for testing
+        
     reddit = create_reddit_instance()
     after = None
     all_posts_data = []
