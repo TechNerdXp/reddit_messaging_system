@@ -9,6 +9,7 @@ import PostsTable from './PostsTable';
 import RedditCallback from './RedditCallback';
 import RedditAuth from './RedditAuth';
 import TestComponent from './TestComponent';
+import ConfigUpdater from './ConfigUpdater';
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
             <li>
               <Link to="/reddit_auth" className="text-blue-600 hover:text-blue-800">Reddit Auth</Link>
             </li>
+            <li>
+              <Link to="/configs" className="text-blue-600 hover:text-blue-800">Configs</Link>
+            </li>
           </ul>
         </nav>
 
@@ -37,6 +41,7 @@ function App() {
           <Route path="/posts" element={<PostsTable />} />
           <Route path="/reddit_callback" element={<RedditCallback />} />
           <Route path="/reddit_auth" element={<RedditAuth />} /> 
+          <ConfigUpdater path="/configs" element={<TestComponent />} /> 
           <Route path="/test" element={<TestComponent />} /> 
         </Routes>
       </div>
