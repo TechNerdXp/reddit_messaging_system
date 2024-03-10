@@ -8,7 +8,7 @@ from project_db import (
 import time
 from project_logger import logger
 
-while True:
+def process_posts():
     with open('admin_subreddits.json', 'r') as f:
         admin_subreddits = loaded_admin_subreddits = json.load(f)      
 
@@ -22,14 +22,11 @@ while True:
         for subreddit_name, keywords in subreddits.items():
             print(subreddit_name)
             print(keywords)
-            try:
-                posts = reddit_posts(admin, subreddit_name, keywords)
-                for post in posts:
-                    insert_post(post)
-                    insert_user(post['author'])
-            except Exception as e:
-                print(e)
-                print(str(e))
+            posts = reddit_posts(admin, subreddit_name, keywords)
+            for post in posts:
+                insert_post(post)
+                insert_user(post['author'])
+            
                    
         posts = get_posts(admin)
 
@@ -67,20 +64,21 @@ while True:
                         update_message_status(post_id, 'waiting_for_the_user')
                     time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
             elif message_status == 'waiting_for_the_user':
-                print('yes')
                 reddit_messages = get_messages(reddit)
                 for message in reddit_messages:
-                    print(message)
                     if message['id'] == post['reddit_message_id']:
-                        print('yes2')
                         for reply in message['replies']:
-                            print(reply)
                             reply_id = reply['id']
                             if not message_exists(reply_id):
-                                print('yes3')
                                 assistant_message_id = add_message(reply['body'], assistant_thread_id)
                                 insert_message(post_id, reply['body'], message['id'], 'reddit_user_reply')
                                 update_reddit_reply_id(post_id, reply_id)
                                 update_message_status(post_id, 'waiting_for_the_assistant')
-                run_assistant(assistant_thread_id)
-time.sleep(30)
+                        run_assistant(assistant_thread_id)
+
+while True:
+    try:
+        process_posts()
+    except Exception as e:
+        logger.error(str(e))
+    time.sleep(30)
