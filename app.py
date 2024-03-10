@@ -2,7 +2,10 @@ import os
 from flask import Flask, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, send_reply
-from project_db import insert_post, insert_user, get_posts, get_configs, update_config
+from project_db import ( 
+    insert_post, insert_user, get_posts, get_configs, get_config, update_config,
+    update_user_subreddit, get_user_subreddits, insert_user_subreddit, delete_user_subreddit
+)
 from project_logger import logger
 from dotenv import load_dotenv
 
@@ -76,6 +79,46 @@ def update_configuration(key):
     value = request.json['value']
     update_config(key, value)
     return jsonify({'status': 'success'})
+
+@app.route('/api/get-admins', methods=['GET'])
+def get_admins():
+    admins = get_configs('REDDIT_ADMINS').split(',')
+    return jsonify(admins)
+
+@app.route('/api/user-subreddits', methods=['GET'])
+def get_user_subreddits():
+    admins = get_configs('REDDIT_ADMINS').split(',')
+    user_subreddits = []
+    for admin in admins:
+        user_subreddits.append(get_user_subreddits(admin))
+    return jsonify(user_subreddits)
+
+@app.route('/api/user-subreddits', methods=['POST'])
+def insert_user_subreddits():
+    data = request.json
+    username = data['username']
+    subreddit = data['subreddit']
+    keywords = data['keywords']
+    insert_user_subreddit(username, subreddit, keywords)
+    return jsonify({'status': 'success'})
+
+@app.route('/api/user-subreddits', methods=['DELETE'])
+def delete_user_subreddits():
+    data = request.json
+    username = data['username']
+    subreddit = data['subreddit']
+    delete_user_subreddit(username, subreddit)
+    return jsonify({'status': 'success'})
+
+@app.route('/api/user-subreddits', methods=['PUT'])
+def update_user_subreddits():
+    data = request.json
+    username = data['username']
+    subreddit = data['subreddit']
+    keywords = data['keywords']
+    update_user_subreddit(username, subreddit, keywords)
+    return jsonify({'status': 'success'})
+
 
 @app.route('/api/test', methods=['GET'])
 def test():

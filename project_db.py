@@ -52,8 +52,60 @@ def create_tables():
         (key TEXT PRIMARY KEY,
         value TEXT)
     ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS user_subreddits
+        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        subreddit TEXT UNIQUE,
+        keywords TEXT)
+    ''')              
+    
 
 
+    conn.commit()
+    conn.close()
+
+def insert_user_subreddit(username, subreddit, keywords):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        INSERT OR IGNORE INTO user_subreddits (username, subreddit, keywords) VALUES (?, ?, ?)
+    ''', (username, subreddit, keywords))
+
+    conn.commit()
+    conn.close()
+
+def get_user_subreddits(username):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute('SELECT * FROM user_subreddits WHERE username = ?', (username,))
+    rows = c.fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
+
+def delete_user_subreddit(username, subreddit):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('DELETE FROM user_subreddits WHERE username = ? AND subreddit = ?', (username, subreddit))
+
+    conn.commit()
+    conn.close()
+
+def update_user_subreddit(username, subreddit, keywords):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+    c.execute("""
+            UPDATE user_subreddits
+            SET subreddit = ?, keywords = ?
+            WHERE username = ?;
+    """, (subreddit, keywords, username))
     conn.commit()
     conn.close()
 
