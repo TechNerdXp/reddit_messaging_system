@@ -31,12 +31,15 @@ function ConfigUpdater() {
 
     return (
         <div className="flex items-center">
-            <div className="w-[55vw] mx-auto">
+            <div className="w-[90vw] mx-auto">
+                <h1 className="text-lg">Configs</h1>
                 {Object.entries(configs).map(([key, value]) => (
                     <div className="flex flex-col" key={key}>
                         <label>{key}</label>
-                        <input className="w-50 field" type="text" value={value} onChange={(event) => handleValueChange(key, event)} />
-                        <button className="button" onClick={() => handleSubmit(key)}>Update</button>
+                        <div>
+                            <input className="inline-block w-[75vw] field" type="text" value={value} onChange={(event) => handleValueChange(key, event)} />
+                            <button className="inline-block w-[14vw] button" onClick={() => handleSubmit(key)}>Update</button>
+                        </div>
                     </div>
                 ))}
             </div>
