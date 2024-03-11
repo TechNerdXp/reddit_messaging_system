@@ -1,9 +1,9 @@
 {
-    "TechNerdXp": {
-        "Java": ["ai", "machine learning"], 
-        "Python": ["ai", "machine learning"]
-    }, 
     "Heydrianpay": {
-        "AskMechanics": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start"]
+        "AskMechanics": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start", "help", "anyone know", "engine light", "Hesitates", "Vibrating"],
+        "AskAMechanic": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start", "help", "anyone know", "engine light", "Hesitates", "Vibrating"],
+        "mechanic": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start", "help", "anyone know", "engine light", "Hesitates", "Vibrating"],
+        "MechanicAdvice": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start", "help", "anyone know", "engine light", "Hesitates", "Vibrating"],
+        "AskAShittyMechanic": ["My car won't start", "an issue with my car", "my car is making a noise", "transmission issue", "knocking sound", "crank no start", "help", "anyone know", "engine light", "Hesitates", "Vibrating"]
     }
 }

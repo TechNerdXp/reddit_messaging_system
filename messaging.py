@@ -1,5 +1,6 @@
 from reddit import send_message, send_reply, get_messages, reddit_posts, create_reddit_instance, is_authenticated
 from ai import create_thread, add_message, get_thread_messages, run_assistant
+import json
 from project_db import (
     get_posts, insert_post, insert_user, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, 
     update_reddit_reply_id, get_reddit_reply_id, message_exists, get_config
@@ -9,6 +10,7 @@ import time
 from project_logger import logger
 
 def process_posts():
+    admin_subreddits = None
     with open('admin_subreddits.json', 'r') as f:
         admin_subreddits = loaded_admin_subreddits = json.load(f)      
 
@@ -47,12 +49,11 @@ def process_posts():
                 update_openai_thread_id(post_id, thread_id)
                 run_assistant(thread_id)
                 update_message_status(post_id, 'waiting_for_the_assistant')
-                pass
             elif message_status == 'waiting_for_the_assistant':
                 thread_messages = get_thread_messages(post['openai_thread_id'])
                 for message in thread_messages.data:
                     message_body = message.content[0].text.value
-                    if not message_exists(message.id) and message.role == 'assistant':
+                    if message.role == 'assistant':
                         subject = post['title']
                         if post['reddit_message_id'] == None:
                             reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
@@ -80,5 +81,6 @@ while True:
     try:
         process_posts()
     except Exception as e:
+        print(str(e))
         logger.error(str(e))
     time.sleep(30)

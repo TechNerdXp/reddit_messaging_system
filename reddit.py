@@ -133,7 +133,6 @@ def get_messages(reddit):
     return messages
 
 def send_message(recipient, subject, body, reddit):
-    recipient = 'NadeemGorsi' # temporary override to avoid swarming users with test messages.
     user = reddit.redditor(recipient)
     user.message(subject=subject, message=body)
     for message in reddit.inbox.sent(limit=None):

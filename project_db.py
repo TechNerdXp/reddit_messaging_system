@@ -326,6 +326,7 @@ def insert_initial_configs():
     conn.close()
 
 create_tables()
+insert_initial_configs()
 
 
 
