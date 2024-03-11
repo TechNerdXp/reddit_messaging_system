@@ -54,4 +54,7 @@ For re-attaching to a screen session
 - Run `screen -r ngrock`
 - Run `screen -r messaging`
 
+## Alternatively Run Bash Script to Run ALL
+- Run `bash run_all.sh`
+
 
