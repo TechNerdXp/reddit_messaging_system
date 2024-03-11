@@ -12,7 +12,7 @@ from project_logger import logger
 def process_posts():
     admin_subreddits = None
     with open('admin_subreddits.json', 'r') as f:
-        admin_subreddits = loaded_admin_subreddits = json.load(f)      
+        admin_subreddits = json.load(f)      
 
     for admin, subreddits in admin_subreddits.items():
         print(admin)
