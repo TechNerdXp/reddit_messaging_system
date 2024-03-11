@@ -3,7 +3,7 @@ from ai import create_thread, add_message, get_thread_messages, run_assistant
 import json
 from project_db import (
     get_posts, insert_post, insert_user, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, 
-    update_reddit_reply_id, get_reddit_reply_id, message_exists, get_config
+    update_reddit_reply_id, get_reddit_reply_id, message_exists, get_config, insert_assistant_message_id, insert_reddit_message_id, assistant_message_id_exists, reddit_message_id_exists
 )
 
 import time
@@ -44,8 +44,7 @@ def process_posts():
             if message_status == 'thread_not_started':
                 message = post['title'] + ' ' + post['text']
                 thread_id = create_thread()
-                message_id = add_message(message, thread_id)
-                insert_message(post_id, message, message_id, 'post')
+                add_message(message, thread_id)
                 update_openai_thread_id(post_id, thread_id)
                 run_assistant(thread_id)
                 update_message_status(post_id, 'waiting_for_the_assistant')
@@ -58,10 +57,11 @@ def process_posts():
                         if post['reddit_message_id'] == None:
                             reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
                             update_reddit_message_id(post_id, reddit_message_id)
-                        else:
-                            message_to_reply = get_reddit_reply_id(post_id)
+                        elif not assistant_message_id_exists(message.id):
+                            message_to_reply = post['reddit_reply_id']
                             reddit_message_id = send_reply(message_to_reply, message_body, reddit)
-                        insert_message(post_id, message_body, message.id, 'assistant')
+                            insert_assistant_message_id(message.id)
+                            
                         update_message_status(post_id, 'waiting_for_the_user')
                     time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
             elif message_status == 'waiting_for_the_user':
@@ -70,9 +70,9 @@ def process_posts():
                     if message['id'] == post['reddit_message_id']:
                         for reply in message['replies']:
                             reply_id = reply['id']
-                            if not message_exists(reply_id):
-                                assistant_message_id = add_message(reply['body'], assistant_thread_id)
-                                insert_message(post_id, reply['body'], message['id'], 'reddit_user_reply')
+                            if not reddit_message_id_exists(reply_id):
+                                add_message(reply['body'], assistant_thread_id)
+                                insert_reddit_message_id(reply_id)
                                 update_reddit_reply_id(post_id, reply_id)
                                 update_message_status(post_id, 'waiting_for_the_assistant')
                         run_assistant(assistant_thread_id)
