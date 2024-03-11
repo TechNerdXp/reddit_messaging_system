@@ -1,8 +1,14 @@
 #!/bin/bash
-
+#clear screen
 clear
-# Kill all existing screen sessions
-killall screen
+# Check if there are any running screen sessions
+if screen -list | grep -q "No Sockets found"; then
+    echo "No screen sessions found."
+else
+    # Kill all existing screen sessions
+    killall screen
+    echo "Killed all screen sessions."
+fi
 
 # Running the Backend
 screen -dmS server bash -c 'flask run --port 5010; exec sh'
