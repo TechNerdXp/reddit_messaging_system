@@ -61,7 +61,7 @@ def process_posts():
                             send_reply(message_to_reply, message_body, reddit)
                             insert_assistant_message_id(message.id)
                             update_message_status(post_id, 'waiting_for_the_user')
-                            time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
+                        time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
             elif message_status == 'waiting_for_the_user':
                 reddit_messages = get_messages(reddit)
                 for message in reddit_messages:
