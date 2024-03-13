@@ -394,7 +394,6 @@ insert_initial_configs()
 
 
 
-
 # def get_users():
 #     conn = sqlite3.connect('db/reddit_messaging_sys.db')
 #     c = conn.cursor()

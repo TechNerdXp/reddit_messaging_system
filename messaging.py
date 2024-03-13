@@ -28,8 +28,7 @@ def process_posts():
             for post in posts:
                 insert_post(post)
                 insert_user(post['author'])
-            
-                   
+                           
         posts = get_posts(admin)
 
         if not posts:
@@ -47,6 +46,7 @@ def process_posts():
                 update_openai_thread_id(post_id, thread_id)
                 run_assistant(thread_id)
                 update_message_status(post_id, 'waiting_for_the_assistant')
+                time.sleep(20)
             elif message_status == 'waiting_for_the_assistant':
                 thread_messages = get_thread_messages(assistant_thread_id)
                 for message in thread_messages.data:
@@ -73,6 +73,7 @@ def process_posts():
                                 insert_reddit_message_id(reply_id)
                                 update_reddit_reply_id(post_id, reply_id)
                                 update_message_status(post_id, 'waiting_for_the_assistant')
+                                time.sleep(20)
                         run_assistant(assistant_thread_id)
 
 while True:
@@ -81,4 +82,4 @@ while True:
     except Exception as e:
         print(str(e))
         logger.error(str(e))
-    time.sleep(30)
+    time.sleep(20)
