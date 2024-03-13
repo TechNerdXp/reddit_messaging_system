@@ -13,9 +13,6 @@ if not api_key:
 
 client = OpenAI(api_key=api_key)
 
-# rest of your code
-
-# rest of your code
 def create_thread():
     try:
         thread = client.beta.threads.create()
