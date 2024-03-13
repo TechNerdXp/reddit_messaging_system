@@ -85,17 +85,21 @@ def reddit_posts(admin, subreddit_name, keywords, max_pages=None, postType=None,
     after = None
     all_posts_data = []
     for _ in range(max_pages):
-        subreddit = reddit.subreddit(subreddit_name)
-        if postType == 'hot':
-            posts = subreddit.hot(limit=limit, params={'after': after})
-        elif postType == 'new':
-            posts = subreddit.new(limit=limit, params={'after': after})
-        elif postType == 'controversial':
-            posts = subreddit.controversial(limit=limit, params={'after': after})
-        elif postType == 'rising':
-            posts = subreddit.rising(limit=limit, params={'after': after})
-        else:
-            posts = subreddit.top(limit=limit, params={'after': after})
+        try:
+            subreddit = reddit.subreddit(subreddit_name)
+            if postType == 'hot':
+                posts = subreddit.hot(limit=limit, params={'after': after})
+            elif postType == 'new':
+                posts = subreddit.new(limit=limit, params={'after': after})
+            elif postType == 'controversial':
+                posts = subreddit.controversial(limit=limit, params={'after': after})
+            elif postType == 'rising':
+                posts = subreddit.rising(limit=limit, params={'after': after})
+            else:
+                posts = subreddit.top(limit=limit, params={'after': after})
+        except Exception as e:
+            logger.error(f'Error getting posts, {str(e)}')
+            return []
 
         posts = peekable(posts)
         if not posts:
@@ -124,8 +128,13 @@ def get_messages(reddit):
     # reddit.inbox.message()
     # reddit.inbox.submission_replies()
     # reddit.inbox.mention()
-
-    for message in reddit.inbox.messages():
+    try:
+        reddit_messages = reddit.inbox.messages()
+    except Exception as e:
+        print(f'Error getting messages, {str(e)}')
+        logger.error(f'Error getting messages, {str(e)}')
+        return []
+    for message in reddit_messages:
         replies = []
         for reply in message.replies:
             replies.append({'id': reply.id, 'body': reply.body, 'sender': str(reply.author), 'time': reply.created_utc})
@@ -133,12 +142,21 @@ def get_messages(reddit):
     return messages
 
 def send_message(recipient, subject, body, reddit):
-    user = reddit.redditor(recipient)
-    user.message(subject=subject, message=body)
+    try:
+        user = reddit.redditor(recipient)
+        user.message(subject=subject, message=body)
+    except Exception as e:
+        print(f'Error sending message to {recipient}, {str(e)}')
+        logger.error(f'Error sending message to {recipient}, {str(e)}')
+        return
     for message in reddit.inbox.sent(limit=None):
         if message.dest == recipient and message.subject == subject and message.body == body:
             return message.id
     
 def send_reply(message_id, body, reddit):
-    message = reddit.inbox.message(message_id)
-    message.reply(body)
+    try:
+        message = reddit.inbox.message(message_id)
+        message.reply(body)
+    except Exception as e:
+        print(f'Error sending reply, {str(e)}')
+        logger.error(f'Error sending reply, {str(e)}')

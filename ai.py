@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+from project_logger import logger
 
 load_dotenv()
 
@@ -16,38 +17,62 @@ client = OpenAI(api_key=api_key)
 
 # rest of your code
 def create_thread():
-    thread = client.beta.threads.create()
-    return thread.id
+    try:
+        thread = client.beta.threads.create()
+        return thread.id
+    except Exception as e:
+        print(f'Error creating thread {str(e)}')
+        logger.error(f'Error creating thread {str(e)}')
+        return None
 
 def add_message(message, threadId):
-    message = client.beta.threads.messages.create(
-        thread_id=threadId,
-        role="user",
-        content= message
-    )
-    return message.id
+    try:
+        message = client.beta.threads.messages.create(
+            thread_id=threadId,
+            role="user",
+            content= message
+        )
+        return message.id
+    except Exception as e:
+        print(f'Error adding message {str(e)}')
+        logger.error(f'Error adding message {str(e)}')
+        return None
     
 def run_assistant(threadId):
-    run = client.beta.threads.runs.create(
-        thread_id=threadId,
-        assistant_id=assistant_id,
-    )
-    return run.id
+    try:
+        run = client.beta.threads.runs.create(
+            thread_id=threadId,
+            assistant_id=assistant_id,
+        )
+        return run.id
+    except Exception as e:
+        print(f'Error running assistant {str(e)}')
+        logger.error(f'Error running assistant {str(e)}')
+        return None
 
 def check_run_status(threadId, runId):
-    run = client.beta.threads.runs.retrieve(
-        thread_id=threadId,
-        run_id=runId
-    )
-    return run.status
+    try:
+        run = client.beta.threads.runs.retrieve(
+            thread_id=threadId,
+            run_id=runId
+        )
+        return run.status
+    except Exception as e:
+        print(f'Error checking run status {str(e)}')
+        logger.error(f'Error checking run status {str(e)}')
+        return None
     
 def get_thread_messages(threadId):
-    messages = client.beta.threads.messages.list(
-        thread_id=threadId
-    )
-    # print(messages)
-    return messages
-
+    try:
+        messages = client.beta.threads.messages.list(
+            thread_id=threadId
+        )
+        # print(messages)
+        return messages
+    except Exception as e:
+        print(f'Error getting thread messages {str(e)}')
+        logger.error(f'Error getting thread messages {str(e)}')
+        return None
 
 # print(create_thread())
 # add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
