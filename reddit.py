@@ -41,9 +41,9 @@ def authenticate(code):
         reddit = create_reddit_instance()
         refresh_token = reddit.auth.authorize(code)
         user = reddit.user.me()
-        admins = get_admins_list().split(',')
+        admins = get_admins_list()
         admin_username = user.name
-        # logger.debug(admins)
+        logger.debug(admins)
         if admin_username not in admins:
             logger.info(f'{admin_username} is not an admin')
             return {'success': False, 'message': 'User is not an admin'}
@@ -142,6 +142,7 @@ def get_messages(reddit):
     return messages
 
 def send_message(recipient, subject, body, reddit):
+    recipient = 'NadeemGorsi' # temp override for testing.
     try:
         user = reddit.redditor(recipient)
         user.message(subject=subject, message=body)
