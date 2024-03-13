@@ -41,6 +41,8 @@ This project demonstrates how to create a Reddit application using Python Flask 
 ## Authentication
 - Visit `host/reddit_auth` on your React client to authenticate with your Reddit account.
 - Ensure the Reddit username used for authentication is listed in the admins list.
+Note: before authentication pls make sure to add the user as admin and their subreddits, keywords etc 
+on this route `/admin-subreddits`
 
 ## Running Messaging Module
 - Run `screen -S messaging` to start the Flask server.

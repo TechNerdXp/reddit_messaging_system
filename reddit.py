@@ -140,7 +140,7 @@ def get_messages(reddit):
     return messages
 
 def send_message(recipient, subject, body, reddit):
-    recipient = 'NadeemGorsi' # temp override for testing.
+    recipient = 'HeydrianPay' # temp override for testing.
     try:
         user = reddit.redditor(recipient)
         user.message(subject=subject, message=body)
