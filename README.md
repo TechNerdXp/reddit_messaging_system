@@ -38,7 +38,6 @@ This project demonstrates how to create a Reddit application using Python Flask 
 - Run `ngrok http --domain=https://reddiappinterface.ngrok-free.app 5010` to start the Flask server.
 - Press `CTRL + A + D` to detatch from this session.
 
-
 ## Authentication
 - Visit `host/reddit_auth` on your React client to authenticate with your Reddit account.
 - Ensure the Reddit username used for authentication is listed in the admins list.
