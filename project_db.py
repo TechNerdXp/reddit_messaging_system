@@ -54,10 +54,10 @@ def create_tables():
     ''')
     
     c.execute('''
-        CREATE TABLE IF NOT EXISTS user_subreddits
+        CREATE TABLE IF NOT EXISTS admins_and_subreddits
         (id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        subreddit TEXT UNIQUE,
+        username TEXT UNIQUE,
+        subreddits TEXT,
         keywords TEXT)
     ''')
     
@@ -286,55 +286,11 @@ def insert_initial_configs():
         ('REDDIT_MAX_PAGES_PER_SUBREDDIT', '2'),
         ('REDDIT_RATE_LIMIT', '30'),
         ('DELAY_BETWEEN_MESSAGES', '200'),
-        ('REDDIT_ADMINS', 'Heydrianpay,Partsnetwork878,hghgj67,TechNerdXp,NadeemGorsi'),
     ]
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
     for key, value in configs:
         c.execute("INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)", (key, value))
-    conn.commit()
-    conn.close()
-    
-def insert_user_subreddit(username, subreddit, keywords):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('''
-        INSERT OR IGNORE INTO user_subreddits (username, subreddit, keywords) VALUES (?, ?, ?)
-    ''', (username, subreddit, keywords))
-
-    conn.commit()
-    conn.close()
-
-def get_user_subreddits(username):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-
-    c.execute('SELECT * FROM user_subreddits WHERE username = ?', (username,))
-    rows = c.fetchall()
-
-    conn.close()
-
-    return [dict(row) for row in rows]
-
-def delete_user_subreddit(username, subreddit):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('DELETE FROM user_subreddits WHERE username = ? AND subreddit = ?', (username, subreddit))
-
-    conn.commit()
-    conn.close()
-
-def update_user_subreddit(username, subreddit, keywords):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-    c.execute("""
-            UPDATE user_subreddits
-            SET subreddit = ?, keywords = ?
-            WHERE username = ?;
-    """, (subreddit, keywords, username))
     conn.commit()
     conn.close()
     
@@ -388,52 +344,55 @@ def reddit_message_id_exists(reddit_message_id):
 
     return exists
 
+def insert_admin_and_subreddit(username, subreddits, keywords):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        INSERT OR IGNORE INTO admins_and_subreddits (username, subreddits, keywords) VALUES (?, ?, ?)
+    ''', (username, subreddits, keywords))
+
+    conn.commit()
+    conn.close()
+
+def get_admins_and_subreddits():
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    conn.row_factory = sqlite3.Row
+
+    c = conn.cursor()
+
+    c.execute('SELECT * FROM admins_and_subreddits')
+
+    admins_and_subreddits = c.fetchall()
+
+    conn.close()
+
+    admins_and_subreddits = [dict(row) for row in admins_and_subreddits]
+
+    return admins_and_subreddits
+
+def update_admin_and_subreddit(id, username, subreddits, keywords):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        UPDATE admins_and_subreddits SET username = ?, subreddits = ?, keywords = ? WHERE id = ?
+    ''', (username, subreddits, keywords, id))
+
+    conn.commit()
+    conn.close()
+
+def delete_admin_and_subreddit(id):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        DELETE FROM admins_and_subreddits WHERE id = ?
+    ''', (id,))
+
+    conn.commit()
+    conn.close()
+
 
 create_tables()
 insert_initial_configs()
-
-
-
-# def get_users():
-#     conn = sqlite3.connect('db/reddit_messaging_sys.db')
-#     c = conn.cursor()
-
-#     c.execute('SELECT * FROM users')
-#     users = c.fetchall()
-
-#     conn.close()
-
-#     return users
-
-# def insert_message(message):
-#     conn = sqlite3.connect('db/reddit_messaging_sys.db')
-#     c = conn.cursor()
-
-#     c.execute('''
-#         INSERT INTO messages VALUES (?, ?, ?, ?, ?)
-#     ''', (message['id'], message['post_id'], message['username'], message['sender'], message['content']))
-
-#     conn.commit()
-#     conn.close()
-
-# def get_messages_for_post(post_id):
-#     conn = sqlite3.connect('db/reddit_messaging_sys.db')
-#     c = conn.cursor()
-
-#     c.execute('SELECT * FROM messages WHERE post_id = ?', (post_id,))
-#     messages = c.fetchall()
-
-#     conn.close()
-
-#     return messages
-
-# def get_messages_for_user(username):
-#     conn = sqlite3.connect('db/reddit_messaging_sys.db')
-#     c = conn.cursor()
-
-#     c.execute('SELECT * FROM messages WHERE username = ?', (username,))
-#     messages = c.fetchall()
-
-#     conn.close()
-
-#     return messages

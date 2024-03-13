@@ -10,7 +10,7 @@ import RedditCallback from './RedditCallback';
 import RedditAuth from './RedditAuth';
 import TestComponent from './TestComponent';
 import ConfigUpdater from './ConfigUpdater';
-import UserSubreddits from './UserSubReddits';
+import AdminSubReddits from './AdminSubreddits';
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
               <Link to="/configs" className="text-blue-600 hover:text-blue-800">Configs</Link>
             </li>
             <li>
-              <Link to="/user-subreddits" className="text-blue-600 hover:text-blue-800">User SubReddits</Link>
+              <Link to="/admin-subreddits" className="text-blue-600 hover:text-blue-800">Admin SubReddits</Link>
             </li>
           </ul>
         </nav>
@@ -46,7 +46,7 @@ function App() {
           <Route path="/reddit_callback" element={<RedditCallback />} />
           <Route path="/reddit_auth" element={<RedditAuth />} /> 
           <Route path="/configs" element={<ConfigUpdater />} /> 
-          <Route path="/user-subreddits" element={<UserSubreddits />} />
+          <Route path="/admin-subreddits" element={<AdminSubReddits />} />
           <Route path="/test" element={<TestComponent />} />
         </Routes>
       </div>

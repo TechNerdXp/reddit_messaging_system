@@ -4,7 +4,7 @@ from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, send_reply
 from project_db import ( 
     insert_post, insert_user, get_posts, get_configs, get_config, update_config,
-    update_user_subreddit, get_user_subreddits, insert_user_subreddit, delete_user_subreddit
+    insert_admin_and_subreddit, get_admins_and_subreddits, update_admin_and_subreddit, delete_admin_and_subreddit
 )
 from project_logger import logger
 from dotenv import load_dotenv
@@ -80,42 +80,28 @@ def update_configuration(key):
     update_config(key, value)
     return jsonify({'status': 'success'})
 
-@app.route('/api/get-admins', methods=['GET'])
-def get_admins():
-    admins = get_config('REDDIT_ADMINS').split(',')
-    return jsonify(admins)
 
-@app.route('/api/user-subreddits/<admin>', methods=['GET'])
-def get_user_subreddit_from_db(admin):
-    admins = get_config('REDDIT_ADMINS').split(',')
-    if admin in admins:
-        return jsonify(get_user_subreddits(admin))
+@app.route('/api/admins-and-subreddits', methods=['POST'])
+def create_admin_and_subreddit():
+    data = request.get_json()
+    insert_admin_and_subreddit(data['username'], data['subreddits'], data['keywords'])
+    return jsonify({'message': 'Admin and subreddit created successfully'}), 201
 
-@app.route('/api/user-subreddits', methods=['POST'])
-def insert_user_subreddits():
-    data = request.json
-    username = data['username']
-    subreddit = data['subreddit']
-    keywords = data['keywords']
-    insert_user_subreddit(username, subreddit, keywords)
-    return jsonify({'status': 'success'})
+@app.route('/api/admins-and-subreddits', methods=['GET'])
+def read_admins_and_subreddits():
+    admins_and_subreddits = get_admins_and_subreddits()
+    return jsonify(admins_and_subreddits), 200
 
-@app.route('/api/user-subreddits', methods=['DELETE'])
-def delete_user_subreddits():
-    data = request.json
-    username = data['username']
-    subreddit = data['subreddit']
-    delete_user_subreddit(username, subreddit)
-    return jsonify({'status': 'success'})
+@app.route('/api/admins-and-subreddits/<id>', methods=['PUT'])
+def update_admin_and_subreddit_route(id):
+    data = request.get_json()
+    update_admin_and_subreddit(id, data['username'], data['subreddits'], data['keywords'])
+    return jsonify({'message': 'Admin and subreddit updated successfully'}), 200
 
-@app.route('/api/user-subreddits', methods=['PUT'])
-def update_user_subreddits():
-    data = request.json
-    username = data['username']
-    subreddit = data['subreddit']
-    keywords = data['keywords']
-    update_user_subreddit(username, subreddit, keywords)
-    return jsonify({'status': 'success'})
+@app.route('/api/admins-and-subreddits/<id>', methods=['DELETE'])
+def delete_admin_and_subreddit_route(id):
+    delete_admin_and_subreddit(id)
+    return jsonify({'message': 'Admin and subreddit deleted successfully'}), 200
 
 
 @app.route('/api/test', methods=['GET'])
