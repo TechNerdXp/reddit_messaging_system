@@ -76,7 +76,7 @@ def process_posts():
                                 time.sleep(20)
                         run_assistant(assistant_thread_id)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     while True:
         try:
             process_posts()

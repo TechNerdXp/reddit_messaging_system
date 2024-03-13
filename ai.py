@@ -9,7 +9,7 @@ assistant_id = os.getenv('OPENAI_ASSISTANT_ID')
 api_key = os.getenv('OPENAI_API_KEY')
 
 if not api_key:
-    raise ValueError("Missing OpenAI API Key")
+    raise ValueError('Missing OpenAI API Key')
 
 client = OpenAI(api_key=api_key)
 
@@ -29,7 +29,7 @@ def add_message(message, threadId):
     try:
         message = client.beta.threads.messages.create(
             thread_id=threadId,
-            role="user",
+            role='user',
             content= message
         )
         return message.id

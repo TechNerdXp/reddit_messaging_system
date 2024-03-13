@@ -23,5 +23,5 @@
 }
 
 .pill-remove::after {
-    content: "x";
+    content: 'x';
 }

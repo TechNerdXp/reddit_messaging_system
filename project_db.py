@@ -211,7 +211,7 @@ def get_config(key):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
-    c.execute("SELECT value FROM configs WHERE key=?", (key,))
+    c.execute('SELECT value FROM configs WHERE key=?', (key,))
     result = c.fetchone()
 
     conn.close()
@@ -224,7 +224,7 @@ def get_config(key):
 def update_config(key, value):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
-    c.execute("UPDATE configs SET value=? WHERE key=?", (value, key))
+    c.execute('UPDATE configs SET value=? WHERE key=?', (value, key))
 
     conn.commit()
     conn.close()
@@ -239,7 +239,7 @@ def insert_initial_configs():
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
     for key, value in configs:
-        c.execute("INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)", (key, value))
+        c.execute('INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)', (key, value))
     conn.commit()
     conn.close()
     

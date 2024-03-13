@@ -12,9 +12,7 @@ from more_itertools  import peekable
 load_dotenv()
 
 def create_reddit_instance(username=None, refresh_token=None):
-    """
-    Creates a Reddit instance using the provided username and refresh token.
-    """
+    
     if refresh_token is None and username is not None:
         refresh_token = get_reddit_auth(username)
         
@@ -43,7 +41,7 @@ def authenticate(code):
         user = reddit.user.me()
         admins = get_admins_list()
         admin_username = user.name
-        logger.debug(admins)
+        # logger.debug(admins)
         if admin_username not in admins:
             logger.info(f'{admin_username} is not an admin')
             return {'success': False, 'message': 'User is not an admin'}
@@ -66,9 +64,9 @@ def is_authenticated(username):
 
 def revoke_auth(token):
     try:
-        url = "https://www.reddit.com/api/v1/revoke_token"
-        headers = {"User-Agent": os.getenv('REDDIT_USER_AGENT')}  
-        data = {"token": token, "token_type_hint": "access_token"}
+        url = 'https://www.reddit.com/api/v1/revoke_token'
+        headers = {'User-Agent': os.getenv('REDDIT_USER_AGENT')}  
+        data = {'token': token, 'token_type_hint': 'access_token'}
         response = requests.post(url, headers=headers, data=data, auth=(os.getenv('REDDIT_CLIENT_ID'), os.getenv('REDDIT_CLIENT_SECRET')))
         return {'success': True}
     except Exception as e:

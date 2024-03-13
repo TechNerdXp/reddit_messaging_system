@@ -19,3 +19,6 @@ screen -dmS ngrock bash -c 'ngrok http --domain=reddiappinterface.ngrok-free.app
 # Running Messaging Module
 # We use sleep to delay the execution of the messaging module
 screen -dmS messaging bash -c 'sleep 10; python3 messaging.py; exec sh'
+
+# Attach to the messaging screen
+screen -r messaging

@@ -25,9 +25,6 @@ def reddit_authenticate():
     code = request.json['code']
     res = authenticate(code)
     if(res['success']):
-        logger.debug(res)
-        logger.debug(res['admin_username'])
-        logger.debug(res['refresh_token'])
         session['REDDIT_REFRESH_TOKEN'] = res['refresh_token']
         session['admin_username'] = res['admin_username']
         return jsonify({'success': True, 'admin_username': res['admin_username']})
@@ -36,7 +33,6 @@ def reddit_authenticate():
 @app.route('/api/reddit/is-authenticated', methods=['GET'])
 def reddit_is_authenticated():
     username = session.get('admin_username')
-    logger.debug(f'username frm session: {username}')
     return jsonify(is_authenticated(username))
 
 @app.route('/api/reddit/revoke-auth', methods=['GET'])
@@ -71,7 +67,6 @@ def get_db_posts():
 @app.route('/api/configs', methods=['GET'])
 def get_configurations():
     configs = get_configs()
-    logger.debug({'configs': jsonify(configs)})
     return jsonify(configs)
 
 @app.route('/api/configs/<key>', methods=['PUT'])
@@ -113,7 +108,7 @@ def test():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    if path != '' and os.path.exists(app.static_folder + '/' + path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
