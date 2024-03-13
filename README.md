@@ -28,6 +28,11 @@ This project demonstrates how to create a Reddit application using Python Flask 
 5. **Install Python Dependencies**
    - Run `pip install -r requirements.txt` to install the necessary Python packages.
 
+## Client build if not aready done
+- Run `cd client`
+- Run `npm install` if not already done
+- Press `npm run build`
+
 ## Running the Backend
 - Run `screen -S server` to create sceen session for server.
 - Run `flask run --port 5010` to start the Flask server.
@@ -48,13 +53,12 @@ This project demonstrates how to create a Reddit application using Python Flask 
 - Run `python3 messaging.py` to start fetching posts and sending messages.
 - Press `CTRL + A + D` to detatch from this session.
 
+## Alternatively Run Bash Script to Run ALL
+- Run `bash run_all.sh`
+
 ## More Commands (Run If Needed)
 For re-attaching to a screen session
 - Run `screen -r server`
 - Run `screen -r ngrock`
 - Run `screen -r messaging`
-
-## Alternatively Run Bash Script to Run ALL
-- Run `bash run_all.sh`
-
 
