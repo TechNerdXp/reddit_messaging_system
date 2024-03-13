@@ -1,15 +1,13 @@
-import sqlite3
+from project_db import get_admins_and_subreddits, get_admins_list
 
-def delete_all_records():
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Execute the SQL statement to delete all records
-    c.execute("DELETE FROM user_subreddits")
-
-    # Commit the changes and close the connection
-    conn.commit()
-    conn.close()
-
-# Call the function
-delete_all_records()
+admin_subreddits = get_admins_and_subreddits()
+    
+for row in admin_subreddits:
+    admin = row['username']
+    subreddits = row['subreddits'].split()
+    keywords = row['keywords'].split()
+    for subreddit in subreddits:
+        print(admin)
+        print(subreddit)
+        print(keywords)
+        print('___________________________')

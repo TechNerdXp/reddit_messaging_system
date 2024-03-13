@@ -2,32 +2,32 @@ from reddit import send_message, send_reply, get_messages, reddit_posts, create_
 from ai import create_thread, add_message, get_thread_messages, run_assistant
 import json
 from project_db import (
-    get_posts, insert_post, insert_user, insert_message, check_message_status, update_message_status, update_openai_thread_id, update_reddit_message_id, 
-    update_reddit_reply_id, get_reddit_reply_id, message_exists, get_config, insert_assistant_message_id, insert_reddit_message_id, assistant_message_id_exists, reddit_message_id_exists
+    get_posts, insert_post, insert_user, update_message_status, update_openai_thread_id, update_reddit_message_id, 
+    update_reddit_reply_id, get_config, insert_assistant_message_id, insert_reddit_message_id, assistant_message_id_exists, reddit_message_id_exists,
+    get_admins_and_subreddits
 )
 
 import time
 from project_logger import logger
 
 def process_posts():
-    admin_subreddits = None
-    with open('admin_subreddits.json', 'r') as f:
-        admin_subreddits = json.load(f)      
-
-    for admin, subreddits in admin_subreddits.items():
-        print(admin)
+    admin_subreddits = get_admins_and_subreddits()
+    
+    for row in admin_subreddits:
+        admin = row['username']
         if not is_authenticated(admin)['success']:
             print(f'{admin} is not authenticated. Pls authenticate using UI')
             continue
         
         reddit = create_reddit_instance(admin)
-        for subreddit_name, keywords in subreddits.items():
-            print(subreddit_name)
-            print(keywords)
-            posts = reddit_posts(admin, subreddit_name, keywords)
+
+        subreddits = row['subreddits'].split()
+        keywords = row['keywords'].split()
+        for subreddit in subreddits:
+            posts = reddit_posts(admin, subreddit, keywords)
             for post in posts:
                 insert_post(post)
-                insert_user(post['author'])
+                insert_user(post['author'])    
                            
         posts = get_posts(admin)
 
@@ -37,8 +37,8 @@ def process_posts():
             message_status = post['message_status']
             post_id = post['id']
             assistant_thread_id = post['openai_thread_id']
-            print(post['title'])
-            print(message_status)
+            print(f'Running messaging for the post: {post['title']}')
+            print(f'Messaging status: {message_status}')
             if message_status == 'thread_not_started':
                 message = post['title'] + '\n\n' + post['text']
                 thread_id = create_thread()
@@ -76,10 +76,11 @@ def process_posts():
                                 time.sleep(20)
                         run_assistant(assistant_thread_id)
 
-while True:
-    try:
-        process_posts()
-    except Exception as e:
-        print(str(e))
-        logger.error(str(e))
-    time.sleep(20)
+if __name__ == "__main__":
+    while True:
+        try:
+            process_posts()
+        except Exception as e:
+            print(str(e))
+            logger.error(str(e))
+        time.sleep(1200)

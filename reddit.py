@@ -4,7 +4,7 @@ import time
 from dotenv import load_dotenv
 import requests
 from project_logger import logger
-from project_db import insert_reddit_auth, get_reddit_auth, get_config
+from project_db import insert_reddit_auth, get_reddit_auth, get_config, get_admins_list
 from filters import filter_posts
 from more_itertools  import peekable
 
@@ -41,7 +41,7 @@ def authenticate(code):
         reddit = create_reddit_instance()
         refresh_token = reddit.auth.authorize(code)
         user = reddit.user.me()
-        admins = get_config('REDDIT_ADMINS').split(',') # to be changed to get_admins() from admins_and_subreddits table temp
+        admins = get_admins_list().split(',')
         admin_username = user.name
         # logger.debug(admins)
         if admin_username not in admins:

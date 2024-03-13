@@ -144,32 +144,6 @@ def update_reddit_reply_id(post_id, reddit_reply_id):
 
     conn.commit()
     conn.close()
-    
-def get_reddit_reply_id(post_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('SELECT reddit_reply_id FROM posts WHERE id = ?', (post_id,))
-    result = c.fetchone()
-    conn.close()
-    return result[0] if result else None
-    
-def check_message_status(post_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Check the message_status of a post
-    c.execute('''
-        SELECT message_status
-        FROM posts
-        WHERE id = ?
-    ''', (post_id,))
-
-    status = c.fetchone()[0]
-
-    conn.close()
-
-    return status
 
 def update_message_status(post_id, status):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
@@ -184,31 +158,6 @@ def update_message_status(post_id, status):
 
     conn.commit()
     conn.close()
-    
-def insert_message(post_id, message, message_id, source):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    # Insert a message and ignore if the message_id already exists
-    c.execute('''
-        INSERT OR IGNORE INTO messages
-        (post_id, message, message_id, source)
-        VALUES (?, ?, ?, ?)
-    ''', (post_id, message, message_id, source))
-
-    conn.commit()
-    conn.close()
-    
-def message_exists(message_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('SELECT id FROM messages WHERE message_id = ?', (message_id,))
-    result = c.fetchone()
-
-    conn.close()
-
-    return result is not None
     
 def insert_user(username):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
@@ -370,6 +319,23 @@ def get_admins_and_subreddits():
     admins_and_subreddits = [dict(row) for row in admins_and_subreddits]
 
     return admins_and_subreddits
+
+def get_admins_list():
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('SELECT username FROM admins_and_subreddits')
+
+    admins = c.fetchall()
+
+    conn.close()
+
+    # Extract usernames from the tuples and convert them into a list
+    admins = [admin[0] for admin in admins]
+
+    return admins
+
+    
 
 def update_admin_and_subreddit(id, username, subreddits, keywords):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
