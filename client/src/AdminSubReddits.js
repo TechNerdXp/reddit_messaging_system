@@ -40,7 +40,7 @@ const AdminSubReddits = () => {
         .catch(error => console.error(error));
     };
 
-    const deleteAdminAndSubreddit = () => {
+    const deleteAdminAndSubreddit = (id) => {
         fetch(`/api/admins-and-subreddits/${id}`, {
             method: 'DELETE',
         })
