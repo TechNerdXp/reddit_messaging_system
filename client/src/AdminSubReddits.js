@@ -41,6 +41,9 @@ const AdminSubReddits = () => {
     };
 
     const deleteAdminAndSubreddit = (id) => {
+        if (!window.confirm('Are you sure you want to delete this admin and subreddits?')) {
+            return;
+        }
         fetch(`/api/admins-and-subreddits/${id}`, {
             method: 'DELETE',
         })
