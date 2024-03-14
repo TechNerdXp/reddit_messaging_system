@@ -68,7 +68,7 @@ def process_posts():
                     if message['id'] == post['reddit_message_id']:
                         for reply in message['replies']:
                             reply_id = reply['id']
-                            if not reddit_message_id_exists(reply_id):
+                            if not reddit_message_id_exists(reply_id) and reply['sender'] == post['author']:
                                 add_message(reply['body'], assistant_thread_id)
                                 insert_reddit_message_id(reply_id)
                                 update_reddit_reply_id(post_id, reply_id)
