@@ -38,12 +38,6 @@ This project demonstrates how to create a Reddit application using Python Flask 
 - Run `ngrok http --domain=https://reddiappinterface.ngrok-free.app 5010` to start the Flask server.
 - Press `CTRL + A + D` to detatch from this session.
 
-## Authentication
-- Visit `host/reddit_auth` on your React client to authenticate with your Reddit account.
-- Ensure the Reddit username used for authentication is listed in the admins list.
-Note: before authentication pls make sure to add the user as admin and their subreddits, keywords etc 
-on this route `/admin-subreddits`
-
 ## Running Messaging Module
 - Run `screen -S messaging` to start the Flask server.
 - Run `python3 messaging.py` to start fetching posts and sending messages.
@@ -51,6 +45,12 @@ on this route `/admin-subreddits`
 
 ## Alternatively Run Bash Script to Run ALL
 - Run `bash run_all.sh`
+
+## Authentication
+- Visit `host/reddit_auth` on your React client to authenticate with your Reddit account.
+- Ensure the Reddit username used for authentication is listed in the admins list.
+Note: before authentication pls make sure to add the user as admin and their subreddits, keywords etc 
+on this route `/admin-subreddits`
 
 ## More Commands (Run If Needed)
 For re-attaching to a screen session
