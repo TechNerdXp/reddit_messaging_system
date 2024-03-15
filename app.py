@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, send_from_directory, session
+from flask import Flask, Response, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 from reddit import reddit_posts, auth_url, authenticate, is_authenticated, revoke_auth, get_messages, send_message, send_reply
 from project_db import ( 
@@ -97,6 +97,15 @@ def update_admin_and_subreddit_route(id):
 def delete_admin_and_subreddit_route(id):
     delete_admin_and_subreddit(id)
     return jsonify({'message': 'Admin and subreddit deleted successfully'}), 200
+
+@app.route('/logs')
+def logs():
+    try:
+        with open('logs/info.log', 'r') as f:
+            content = f.read()
+        return Response(content, mimetype='text/plain')
+    except FileNotFoundError:
+        return "The file does not exist", 404
 
 
 @app.route('/api/test', methods=['GET'])

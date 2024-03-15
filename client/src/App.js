@@ -11,6 +11,7 @@ import RedditAuth from './RedditAuth';
 import TestComponent from './TestComponent';
 import ConfigUpdater from './ConfigUpdater';
 import AdminSubReddits from './AdminSubreddits';
+import Info from './Info';
 
 function App() {
   return (
@@ -28,13 +29,16 @@ function App() {
               <Link to="/posts" className="text-blue-600 hover:text-blue-800">Posts</Link>
             </li>
             <li>
-              <Link to="/reddit_auth" className="text-blue-600 hover:text-blue-800">Reddit Auth</Link>
-            </li>
-            <li>
               <Link to="/configs" className="text-blue-600 hover:text-blue-800">Configs</Link>
             </li>
             <li>
               <Link to="/admin-subreddits" className="text-blue-600 hover:text-blue-800">Admin SubReddits</Link>
+            </li>
+            <li>
+              <Link to="/reddit_auth" className="text-blue-600 hover:text-blue-800">Reddit Auth</Link>
+            </li>
+            <li>
+              <Link to="/info" className="text-blue-600 hover:text-blue-800">Info</Link>
             </li>
           </ul>
         </nav>
@@ -44,10 +48,11 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/posts" element={<PostsTable />} />
           <Route path="/reddit_callback" element={<RedditCallback />} />
-          <Route path="/reddit_auth" element={<RedditAuth />} /> 
           <Route path="/configs" element={<ConfigUpdater />} /> 
           <Route path="/admin-subreddits" element={<AdminSubReddits />} />
           <Route path="/test" element={<TestComponent />} />
+          <Route path="/reddit_auth" element={<RedditAuth />} /> 
+          <Route path="/info" element={<Info />} /> 
         </Routes>
       </div>
     </Router>
