@@ -21,7 +21,7 @@ def process_posts():
         if not is_authenticated(admin)['success']:
             log_info(f'{admin} is not authenticated. Pls authenticate using UI')
             continue
-        log_info(f'-------------------->>> Admin {admin}')
+        log_info(f'-------------------->>> Admin: {admin} <<<-------------------')
         reddit = create_reddit_instance(admin)
 
         subreddits = row['subreddits'].split()
@@ -41,8 +41,8 @@ def process_posts():
             post_id = post['id']
             assistant_thread_id = post['openai_thread_id']
             post_title = post['title']
-            log_info(f'Running messaging for the post: {post_title} <<-----------------')
-            log_info(f'Post conversation status ----------> {message_status}')
+            log_info(f'--->>> Running messaging for the post: {post_title}')
+            log_info(f'Post conversation status {message_status} <<-----------------')
             if message_status == 'thread_not_started':
                 message = post_title + '\n\n' + post['text']
                 thread_id = create_thread()
@@ -89,6 +89,6 @@ if __name__ == '__main__':
         try:
             process_posts()
         except Exception as e:
-            log_info(str(e))
+            print(str(e))
             logger.error(str(e))
         time.sleep(1200)
