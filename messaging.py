@@ -21,7 +21,10 @@ def process_posts():
         if not is_authenticated(admin)['success']:
             log_info(f'{admin} is not authenticated. Pls authenticate using UI')
             continue
+        log_info(f'-------------------->>>>>>>>>>><<<<<<<<<<<-------------------')
         log_info(f'-------------------->>> Admin: {admin} <<<-------------------')
+        log_info(f'-------------------->>>>>>>>>>><<<<<<<<<<<-------------------')
+
         reddit = create_reddit_instance(admin)
 
         subreddits = row['subreddits'].split()
