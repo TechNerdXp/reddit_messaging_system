@@ -147,7 +147,7 @@ def send_message(recipient, subject, body, reddit):
     except Exception as e:
         print(f'Error sending message to {recipient}, {str(e)}')
         logger.error(f'Error sending message to {recipient}, {str(e)}')
-        return
+        raise
     for message in reddit.inbox.sent(limit=None):
         if message.dest == recipient and message.subject == subject and message.body == body:
             return message.id
@@ -159,3 +159,4 @@ def send_reply(message_id, body, reddit):
     except Exception as e:
         print(f'Error sending reply, {str(e)}')
         logger.error(f'Error sending reply, {str(e)}')
+        raise

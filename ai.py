@@ -20,7 +20,7 @@ def create_thread():
     except Exception as e:
         print(f'Error creating thread {str(e)}')
         logger.error(f'Error creating thread {str(e)}')
-        return None
+        raise
 
 def add_message(message, threadId):
     try:
@@ -33,7 +33,7 @@ def add_message(message, threadId):
     except Exception as e:
         print(f'Error adding message {str(e)}')
         logger.error(f'Error adding message {str(e)}')
-        return None
+        raise
     
 def run_assistant(threadId):
     try:
@@ -45,7 +45,7 @@ def run_assistant(threadId):
     except Exception as e:
         print(f'Error running assistant {str(e)}')
         logger.error(f'Error running assistant {str(e)}')
-        return None
+        raise
 
 def check_run_status(threadId, runId):
     try:
@@ -57,7 +57,7 @@ def check_run_status(threadId, runId):
     except Exception as e:
         print(f'Error checking run status {str(e)}')
         logger.error(f'Error checking run status {str(e)}')
-        return None
+        raise
     
 def get_thread_messages(threadId):
     try:
@@ -69,7 +69,7 @@ def get_thread_messages(threadId):
     except Exception as e:
         print(f'Error getting thread messages {str(e)}')
         logger.error(f'Error getting thread messages {str(e)}')
-        return None
+        raise
 
 # print(create_thread())
 # add_message('test message', 'thread_j4b3JCffZYbuFt3vb1Zj0RAT')
