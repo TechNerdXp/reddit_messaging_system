@@ -358,7 +358,10 @@ def delete_admin_and_subreddit(id):
 
     conn.commit()
     conn.close()
-
+    
+def insert_default_admin():
+    insert_admin_and_subreddit('DiscussionAware113', 'Test', 'Hello, Hi, Test, Good Morning')
 
 create_tables()
 insert_initial_configs()
+insert_default_admin()
