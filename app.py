@@ -98,10 +98,19 @@ def delete_admin_and_subreddit_route(id):
     delete_admin_and_subreddit(id)
     return jsonify({'message': 'Admin and subreddit deleted successfully'}), 200
 
-@app.route('/logs')
-def logs():
+@app.route('/info_logs')
+def info_logs():
     try:
         with open('logs/info.log', 'r') as f:
+            content = f.read()
+        return Response(content, mimetype='text/plain')
+    except FileNotFoundError:
+        return "The file does not exist", 404
+
+@app.route('/error_logs')
+def error_logs():
+    try:
+        with open('logs/error.log', 'r') as f:
             content = f.read()
         return Response(content, mimetype='text/plain')
     except FileNotFoundError:

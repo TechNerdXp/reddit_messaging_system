@@ -11,7 +11,8 @@ import RedditAuth from './RedditAuth';
 import TestComponent from './TestComponent';
 import ConfigUpdater from './ConfigUpdater';
 import AdminSubReddits from './AdminSubreddits';
-import Info from './Info';
+import InfoLogs from './InfoLogs';
+import ErrorLogs from './ErrorLogs';
 
 function App() {
   return (
@@ -40,6 +41,9 @@ function App() {
             <li>
               <Link to="/info" className="text-blue-600 hover:text-blue-800">Info</Link>
             </li>
+            <li>
+              <Link to="/errors" className="text-blue-600 hover:text-blue-800">Errors</Link>
+            </li>
           </ul>
         </nav>
 
@@ -52,7 +56,8 @@ function App() {
           <Route path="/admin-subreddits" element={<AdminSubReddits />} />
           <Route path="/test" element={<TestComponent />} />
           <Route path="/reddit_auth" element={<RedditAuth />} /> 
-          <Route path="/info" element={<Info />} /> 
+          <Route path="/info" element={<InfoLogs />} /> 
+          <Route path="/errors" element={<ErrorLogs />} /> 
         </Routes>
       </div>
     </Router>
