@@ -47,13 +47,16 @@ def process_posts():
             log_info(f'--->>> Running messaging for the post: {post_title}')
             log_info(f'Post conversation status {message_status} <<-----------------')
             if message_status == 'thread_not_started':
-                message = post_title + '\n\n' + post['text']
-                thread_id = create_thread()
-                add_message(message, thread_id)
-                update_openai_thread_id(post_id, thread_id)
-                run_assistant(thread_id)
-                update_message_status(post_id, 'waiting_for_the_assistant')
-                log_info('Post sent to the assistant. ----------------->>>')
+                try:
+                    message = post_title + '\n\n' + post['text']
+                    thread_id = create_thread()
+                    add_message(message, thread_id)
+                    update_openai_thread_id(post_id, thread_id)
+                    run_assistant(thread_id)
+                    update_message_status(post_id, 'waiting_for_the_assistant')
+                    log_info('Post sent to the assistant. ----------------->>>')
+                except:
+                    pass
                 time.sleep(20)
             elif message_status == 'waiting_for_the_assistant':
                 thread_messages = get_thread_messages(assistant_thread_id)
@@ -62,15 +65,22 @@ def process_posts():
                     if message.role == 'assistant':
                         subject = post_title
                         if post['reddit_message_id'] == None:
-                            reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
-                            update_reddit_message_id(post_id, reddit_message_id)
-                            log_info('Message sent to the user. ----------------->>>')
+                            try:
+                                reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
+                                update_reddit_message_id(post_id, reddit_message_id)
+                                update_message_status(post_id, 'waiting_for_the_user')
+                                log_info('Message sent to the user. ----------------->>>')
+                            except:
+                                pass
                         elif not assistant_message_id_exists(message.id):
-                            message_to_reply = post['reddit_reply_id']
-                            send_reply(message_to_reply, message_body, reddit)
-                            insert_assistant_message_id(message.id)
-                            log_info('Reply sent to the user. ----------------->>>')
-                        update_message_status(post_id, 'waiting_for_the_user')
+                            try:
+                                message_to_reply = post['reddit_reply_id']
+                                send_reply(message_to_reply, message_body, reddit)
+                                insert_assistant_message_id(message.id)
+                                update_message_status(post_id, 'waiting_for_the_user')
+                                log_info('Reply sent to the user. ----------------->>>')
+                            except:
+                                pass
                         time.sleep(int(get_config('DELAY_BETWEEN_MESSAGES')))
             elif message_status == 'waiting_for_the_user':
                 reddit_messages = get_messages(reddit)
@@ -79,12 +89,15 @@ def process_posts():
                         for reply in message['replies']:
                             reply_id = reply['id']
                             if not reddit_message_id_exists(reply_id) and reply['sender'] == post['author']:
-                                add_message(reply['body'], assistant_thread_id)
-                                insert_reddit_message_id(reply_id)
-                                update_reddit_reply_id(post_id, reply_id)
-                                update_message_status(post_id, 'waiting_for_the_assistant')
-                                time.sleep(20)
-                                log_info('Reply sent to the assistant. ----------------->>>')
+                                try:
+                                    add_message(reply['body'], assistant_thread_id)
+                                    insert_reddit_message_id(reply_id)
+                                    update_reddit_reply_id(post_id, reply_id)
+                                    update_message_status(post_id, 'waiting_for_the_assistant')
+                                    time.sleep(20)
+                                    log_info('Reply sent to the assistant. ----------------->>>')
+                                except:
+                                    pass
                         run_assistant(assistant_thread_id)
 
 if __name__ == '__main__':
