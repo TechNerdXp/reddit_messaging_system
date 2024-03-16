@@ -1,0 +1,10 @@
+FLASK_APP=app.py
+SECRET_KEY=UseYourOwnSuperTopSecretStrForTheMissionFlaskApp
+
+REDDIT_CLIENT_ID=
+REDDIT_CLIENT_SECRET=
+REDDIT_USER_AGENT=web:com.RedditUserNameOfTheAppOwner.NameOfTheApp:v1.0 (by /u/RedditUserNameOfTheAppOwner)
+REDDIT_REDIRECT_URI=host/reddit_callback
+
+OPENAI_API_KEY=
+OPENAI_ASSISTANT_ID=
