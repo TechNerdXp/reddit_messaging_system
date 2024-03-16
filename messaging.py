@@ -40,6 +40,8 @@ def process_posts():
         if not posts:
             log_info('No there are no posts to running messaging on.')
         for post in posts:
+            if post['admin'] != admin:
+                continue
             message_status = post['message_status']
             post_id = post['id']
             assistant_thread_id = post['openai_thread_id']
@@ -68,6 +70,7 @@ def process_posts():
                             try:
                                 reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
                                 update_reddit_message_id(post_id, reddit_message_id)
+                                insert_reddit_message_id(reddit_message_id)
                                 update_message_status(post_id, 'waiting_for_the_user')
                                 log_info('Message sent to the user. ----------------->>>')
                             except:
