@@ -40,8 +40,6 @@ def process_posts():
         if not posts:
             log_info('No there are no posts to running messaging on.')
         for post in posts:
-            if post['admin'] != admin:
-                continue
             message_status = post['message_status']
             post_id = post['id']
             assistant_thread_id = post['openai_thread_id']

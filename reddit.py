@@ -140,17 +140,17 @@ def get_messages(reddit):
     return messages
 
 def send_message(recipient, subject, body, reddit):
-    recipient = 'HeydrianPay' # temp override for testing.
+    # recipient = 'HeydrianPay' # temp override for testing.
     try:
         user = reddit.redditor(recipient)
         user.message(subject=subject, message=body)
+        for message in reddit.inbox.sent(limit=None):
+            if message.dest == recipient and message.subject == subject and message.body == body:
+                return message.id
     except Exception as e:
         print(f'Error sending message to {recipient}, {str(e)}')
         logger.error(f'Error sending message to {recipient}, {str(e)}')
-        raise
-    for message in reddit.inbox.sent(limit=None):
-        if message.dest == recipient and message.subject == subject and message.body == body:
-            return message.id
+        raise    
     
 def send_reply(message_id, body, reddit):
     try:
