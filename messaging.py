@@ -70,7 +70,7 @@ def process_posts():
                             try:
                                 reddit_message_id = send_message(post['author'], subject[:100], message_body, reddit)
                                 update_reddit_message_id(post_id, reddit_message_id)
-                                insert_reddit_message_id(reddit_message_id)
+                                insert_assistant_message_id(message.id)
                                 update_message_status(post_id, 'waiting_for_the_user')
                                 log_info('Message sent to the user. ----------------->>>')
                             except:
