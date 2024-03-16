@@ -26,11 +26,12 @@ def process_posts():
         log_info(f'-------------------->>>>>>>>>>><<<<<<<<<<<-------------------')
 
         reddit = create_reddit_instance(admin)
-
-        subreddits = row['subreddits'].split()
-        keywords = row['keywords'].split()
+        
+        subreddits = [subreddit.strip() for subreddit in row['subreddits'].split(',')]
+        keywords = [keyword.strip() for keyword in row['keywords'].split(',')]
         for subreddit in subreddits:
-            posts = reddit_posts(admin, subreddit, keywords)
+            log_info(f'<<<<<< Fetching posts from {subreddit} >>>>>>')
+            posts = reddit_posts(admin, subreddit, keywords, reddit)
             for post in posts:
                 insert_post(post)
                 insert_user(post['author'])    

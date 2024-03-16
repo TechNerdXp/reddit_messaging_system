@@ -51,7 +51,7 @@ def get_reddit_posts():
     postType = data.get('postType', 'top')
     keywords = data.get('keywords', '')
     exactMatch = data.get('exactMatch', False)
-    dataFromReddit = reddit_posts(session.get('admin_username'), subreddit_name, keywords, max_pages, postType)
+    dataFromReddit = reddit_posts(session.get('admin_username'), subreddit_name, keywords, None, max_pages, postType)
     
     for post in dataFromReddit:
         insert_post(post)
