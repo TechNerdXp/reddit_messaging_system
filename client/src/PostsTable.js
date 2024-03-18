@@ -28,6 +28,7 @@ const PostsTable = () => {
                         <th className="px-4 py-2">Chats on Assistant</th>
                         <th className="px-4 py-2">Chats on Reddit</th>
                         <th className="px-4 py-2">Link to the post</th>
+                        <th className="px-4 py-2">Message Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,7 @@ const PostsTable = () => {
                                     <ArrowTopRightOnSquareIcon className="h-6 w-6 text-gray-500" />
                                 </a>
                             </td>
+                            <td className="border px-4 py-2">{post.message_status}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -61,7 +61,7 @@ def get_reddit_posts():
 
 @app.route('/api/db/posts', methods=['GET'])
 def get_db_posts():
-    posts = get_posts()
+    posts = get_posts(limit=100)
     return jsonify(posts)
 
 @app.route('/api/configs', methods=['GET'])

@@ -113,7 +113,7 @@ def reddit_posts(admin, subreddit_name, keywords, reddit, max_pages=None, postTy
         after = posts_data[-1]['id']
         all_posts_data.extend(posts_data)
 
-        time.sleep(int(get_config('REDDIT_RATE_LIMIT')))
+        time.sleep(int(get_config('DELAY_IN_FETCHING_POSTS_IN_SECONDS')))
         
     all_posts_data = filter_posts(all_posts_data, keywords, False, 80)
     return all_posts_data

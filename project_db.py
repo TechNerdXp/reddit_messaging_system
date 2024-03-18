@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 import os
 
@@ -10,7 +11,8 @@ def create_tables():
 
     c.execute('''
         CREATE TABLE IF NOT EXISTS posts
-        (id TEXT PRIMARY KEY,
+        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id TEXT,
         title TEXT,
         text TEXT,
         html TEXT,
@@ -20,25 +22,14 @@ def create_tables():
         admin TEXT,
         openai_thread_id TEXT,
         reddit_message_id TEXT,
-        reddit_reply_id TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         message_status TEXT DEFAULT 'thread_not_started')
     ''')
 
     c.execute('''
         CREATE TABLE IF NOT EXISTS users
         (username TEXT PRIMARY KEY)
-    ''')
-
-    # Create table for messages
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS messages
-        (id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id TEXT,
-        message TEXT,
-        message_id TEXT,
-        source TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(post_id) REFERENCES posts(id))
     ''')
     
     c.execute('''
@@ -61,22 +52,12 @@ def create_tables():
         keywords TEXT)
     ''')
     
-    # ids of messages from the assistant
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS assistant_messages
-        (id INTEGER PRIMARY KEY AUTOINCREMENT,
-        assistant_message_id TEXT UNIQUE)
-    ''')
-    
-    # ids of messages from reddit
     c.execute('''
         CREATE TABLE IF NOT EXISTS reddit_messages
         (id INTEGER PRIMARY KEY AUTOINCREMENT,
         reddit_message_id TEXT UNIQUE)
     ''')              
     
-
-
     conn.commit()
     conn.close()
 
@@ -85,24 +66,28 @@ def insert_post(post):
     c = conn.cursor()
 
     c.execute('''
-        INSERT OR IGNORE INTO posts (id, title, text, html, author, subreddit, post_url, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO posts (post_id, title, text, html, author, subreddit, post_url, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', (post['id'], post['title'], post['text'], post['html'], post['author'], post['subreddit'], post['post_url'], post['admin']))
 
     conn.commit()
     conn.close()
 
-def get_posts(admin=None):
+def get_posts(admin=None, limit=None):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     conn.row_factory = sqlite3.Row
 
     c = conn.cursor()
 
     if admin is None:
-        # Select all posts if no admin is specified
-        c.execute('SELECT * FROM posts')
+        query = 'SELECT * FROM posts ORDER BY updated_at DESC'
     else:
-        # Select posts for a specific admin
-        c.execute('SELECT * FROM posts WHERE admin = ?', (admin,))
+        query = 'SELECT * FROM posts WHERE admin = ? ORDER BY updated_at DESC'
+
+    if limit is not None:
+        query += ' LIMIT ?'
+        c.execute(query, (admin, limit) if admin else (limit,))
+    else:
+        c.execute(query, (admin,) if admin else ())
 
     posts = c.fetchall()
 
@@ -111,14 +96,14 @@ def get_posts(admin=None):
     posts = [dict(row) for row in posts]
 
     return posts
-    
+
 def update_openai_thread_id(post_id, openai_thread_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
     c.execute('''
-        UPDATE posts SET openai_thread_id = ? WHERE id = ?
-    ''', (openai_thread_id, post_id))
+        UPDATE posts SET openai_thread_id = ?, updated_at = ? WHERE post_id = ?
+    ''', (openai_thread_id, datetime.now(), post_id))
 
     conn.commit()
     conn.close()
@@ -128,19 +113,8 @@ def update_reddit_message_id(post_id, reddit_message_id):
     c = conn.cursor()
 
     c.execute('''
-        UPDATE posts SET reddit_message_id = ? WHERE id = ?
-    ''', (reddit_message_id, post_id))
-
-    conn.commit()
-    conn.close()
-
-def update_reddit_reply_id(post_id, reddit_reply_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('''
-        UPDATE posts SET reddit_reply_id = ? WHERE id = ?
-    ''', (reddit_reply_id, post_id))
+        UPDATE posts SET reddit_message_id = ?, updated_at = ? WHERE post_id = ?
+    ''', (reddit_message_id, datetime.now(), post_id))
 
     conn.commit()
     conn.close()
@@ -149,12 +123,11 @@ def update_message_status(post_id, status):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
 
-    # Update the message_status of a post
     c.execute('''
         UPDATE posts
-        SET message_status = ?
-        WHERE id = ?
-    ''', (status, post_id))
+        SET message_status = ?, updated_at = ?
+        WHERE post_id = ?
+    ''', (status, datetime.now(), post_id))
 
     conn.commit()
     conn.close()
@@ -200,7 +173,6 @@ def get_configs():
     c.execute('SELECT * FROM configs')
     rows = c.fetchall()
 
-    # Convert rows to a dictionary
     configs = {row['key']: row['value'] for row in rows}
 
     conn.close()
@@ -229,28 +201,11 @@ def update_config(key, value):
     conn.commit()
     conn.close()
 
-def insert_initial_configs():
-    configs = [
-        ('REDDIT_POST_TYPE', 'new'),
-        ('REDDIT_MAX_PAGES_PER_SUBREDDIT', '2'),
-        ('REDDIT_RATE_LIMIT', '30'),
-        ('DELAY_BETWEEN_MESSAGES', '200'),
-    ]
+def insert_initial_configs(configs):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
     c = conn.cursor()
     for key, value in configs:
         c.execute('INSERT OR IGNORE INTO configs (key, value) VALUES (?, ?)', (key, value))
-    conn.commit()
-    conn.close()
-    
-def insert_assistant_message_id(assistant_message_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('''
-        INSERT OR IGNORE INTO assistant_messages (assistant_message_id) VALUES (?)
-    ''', (assistant_message_id,))
-
     conn.commit()
     conn.close()
 
@@ -264,20 +219,6 @@ def insert_reddit_message_id(reddit_message_id):
 
     conn.commit()
     conn.close()
-
-def assistant_message_id_exists(assistant_message_id):
-    conn = sqlite3.connect('db/reddit_messaging_sys.db')
-    c = conn.cursor()
-
-    c.execute('''
-        SELECT 1 FROM assistant_messages WHERE assistant_message_id = ?
-    ''', (assistant_message_id,))
-
-    exists = c.fetchone() is not None
-
-    conn.close()
-
-    return exists
 
 def reddit_message_id_exists(reddit_message_id):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
@@ -330,12 +271,9 @@ def get_admins_list():
 
     conn.close()
 
-    # Extract usernames from the tuples and convert them into a list
     admins = [admin[0] for admin in admins]
 
     return admins
-
-    
 
 def update_admin_and_subreddit(id, username, subreddits, keywords):
     conn = sqlite3.connect('db/reddit_messaging_sys.db')
@@ -360,8 +298,4 @@ def delete_admin_and_subreddit(id):
     conn.close()
     
 def insert_default_admin():
-    insert_admin_and_subreddit('DiscussionAware113', 'Test', 'Hello, Hi, Test, Good Morning')
-
-create_tables()
-insert_initial_configs()
-insert_default_admin()
+    insert_admin_and_subreddit('TechNerdXp', 'Test, Best', 'Hello, Hi, Test, Good Morning')

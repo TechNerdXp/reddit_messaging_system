@@ -28,23 +28,12 @@ This project demonstrates how to create a Reddit application using Python Flask 
 5. **Install Python Dependencies**
    - Run `pip install -r requirements.txt` to install the necessary Python packages.
 
-## Running the Backend
-- Run `screen -S server` to create sceen session for server.
-- Run `flask run --port 5010` to start the Flask server.
-- Press `CTRL + A + D` to detatch from this session.
+## Initial Setup
+- Run `python3 setup.py`
 
-## Optional Ngrock Step
-- Run `screen -S ngrock` to create screen session for ngrock.
-- Run `ngrok http --domain=https://reddiappinterface.ngrok-free.app 5010` to start the Flask server.
-- Press `CTRL + A + D` to detatch from this session.
-
-## Running Messaging Module
-- Run `screen -S messaging` to start the Flask server.
-- Run `python3 messaging.py` to start fetching posts and sending messages.
-- Press `CTRL + A + D` to detatch from this session.
-
-## Alternatively Run Bash Script to Run ALL
+## Alternatively Run Bash Script to Run ALL from Backend to Messaging
 - Run `bash run_all.sh`
+Note: pls update the host domain in the script and you may want to remvove ngrock step.
 
 ## Authentication
 - Visit `host/reddit_auth` on your React client to authenticate with your Reddit account.
@@ -52,13 +41,15 @@ This project demonstrates how to create a Reddit application using Python Flask 
 Note: before authentication pls make sure to add the user as admin and their subreddits, keywords etc 
 on this route `/admin-subreddits`
 
-## More Commands (Run If Needed)
+## More Commands (Use If Needed)
+For Listing screen sessions that are running
+- Run `screen -ls`
 For re-attaching to a screen session
 - Run `screen -r server`
 - Run `screen -r ngrock`
+- Run `screen -r post_fetching`
 - Run `screen -r messaging`
 
 ## Client build if not aready done
-- Run `cd client`
-- Run `npm install` if not already done
-- Press `npm run build`
+- Run `./client_build.bat` (for Windows)
+

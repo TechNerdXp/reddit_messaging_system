@@ -53,6 +53,7 @@ def check_run_status(threadId, runId):
             thread_id=threadId,
             run_id=runId
         )
+        # print(run.usage)
         return run.status
     except Exception as e:
         print(f'Error checking run status {str(e)}')
