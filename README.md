@@ -44,12 +44,15 @@ on this route `/admin-subreddits`
 ## More Commands (Use If Needed)
 For Listing screen sessions that are running
 - Run `screen -ls`
+
 For re-attaching to a screen session
 - Run `screen -r server`
 - Run `screen -r ngrock`
 - Run `screen -r post_fetching`
 - Run `screen -r messaging`
 
+`CTRL + A + D` for detatching from a screen
+Note: Pls do not `CTRL + C` in a screen it'll terminate the screen
+
 ## Client build if not aready done
 - Run `./client_build.bat` (for Windows)
-
