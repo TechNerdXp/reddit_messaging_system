@@ -66,7 +66,7 @@ def process_posts():
                         update_reddit_message_id(post_id, reddit_message_id)
                         update_message_status(post_id, 'waiting_for_the_user')
                         log_info('Message sent to the user. ----------------->>>')
-                        time.sleep(delay_between_messages - 10)
+                        time.sleep(abs(delay_between_messages - 10))
                 elif message_status == 'waiting_for_the_user' and replying == 1:
                     reddit_messages = get_messages(reddit)
                     for message in reddit_messages:
@@ -91,8 +91,9 @@ def process_posts():
                                         message = messages.data[0]
                                         message_body = message.content[0].text.value
                                         send_reply(reply_id, message_body, reddit)
-                                        time.sleep(delay_between_messages - 10)
+                                        time.sleep(abs(delay_between_messages - 10))
                                         insert_reddit_message_id(reply_id)
+                                        update_message_status(post_id, 'waiting_for_the_user') # for updating updated_at field
                                         log_info('Reply sent to the user. ----------------->>>')
             except:
                 pass
