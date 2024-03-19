@@ -43,3 +43,16 @@ def update_table():
 
     conn.commit()
     conn.close()
+
+def update_message_status():
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        UPDATE posts
+        SET message_status = 'not_sure',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE message_status = 'thread_not_started'
+    ''')
+    
+update_message_status()

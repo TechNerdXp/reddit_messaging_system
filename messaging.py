@@ -35,7 +35,7 @@ def process_posts():
         for post in posts:
             try:
                 message_status = post['message_status']
-                post_id = post['id']
+                post_id = post['post_id']
                 assistant_thread_id = post['openai_thread_id']
                 post_title = post['title']
                 log_info(f'--->>> Running messaging for the post: {post_title}')

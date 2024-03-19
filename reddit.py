@@ -108,9 +108,9 @@ def reddit_posts(admin, subreddit_name, keywords, reddit, max_pages=None, postTy
 
         posts_data = []
         for post in posts:
-            posts_data.append({'id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name if post.author else None, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': admin})
+            posts_data.append({'post_id':post.id, 'title': post.title, 'text': post.selftext, 'html': post.selftext_html, 'author': post.author.name if post.author else None, 'subreddit': post.subreddit.display_name, 'post_url': post.url, 'admin': admin})
         
-        after = posts_data[-1]['id']
+        after = posts_data[-1]['post_id']
         all_posts_data.extend(posts_data)
 
         time.sleep(int(get_config('DELAY_IN_FETCHING_POSTS_IN_SECONDS')))
