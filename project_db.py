@@ -12,7 +12,7 @@ def create_tables():
     c.execute('''
         CREATE TABLE IF NOT EXISTS posts
         (id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id TEXT,
+        post_id TEXT UNIQUE,
         title TEXT,
         text TEXT,
         html TEXT,
