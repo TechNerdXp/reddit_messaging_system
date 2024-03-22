@@ -33,6 +33,13 @@ def create_tables():
     ''')
     
     c.execute('''
+        CREATE TABLE IF NOT EXISTS skipped_users (
+            username TEXT PRIMARY KEY,
+            reason TEXT
+        )
+    ''')
+    
+    c.execute('''
         CREATE TABLE IF NOT EXISTS reddit_auth
         (admin_username TEXT PRIMARY KEY,
         refresh_token TEXT)
@@ -299,3 +306,25 @@ def delete_admin_and_subreddit(id):
     
 def insert_default_admin():
     insert_admin_and_subreddit('TechNerdXp', 'Test, Best', 'Hello, Hi, Test, Good Morning')
+
+def insert_user_to_skip(username, reason):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('''
+        INSERT OR IGNORE INTO skipped_users (username, reason) VALUES (?, ?)
+    ''', (username, reason))
+
+    conn.commit()
+    conn.close()
+
+def user_exists_in_users_to_skip(username):
+    conn = sqlite3.connect('db/reddit_messaging_sys.db')
+    c = conn.cursor()
+
+    c.execute('SELECT * FROM skipped_users WHERE username = ?', (username,))
+    user = c.fetchone()
+
+    conn.close()
+
+    return user is not None
