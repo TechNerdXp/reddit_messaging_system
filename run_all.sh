@@ -2,6 +2,8 @@
 
 clear
 
+rm -rf ./logs
+
 declare -a arr=("server" "ngrock" "post_fetching" "messaging")
 
 if screen -list | grep -q "No Sockets found"; then
